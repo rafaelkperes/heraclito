@@ -2,10 +2,10 @@ package org.heraclito.proof;
 
 import antlrparser.LineLexer;
 import antlrparser.LineParser;
-import antlrparser.visitor.LeftExpressionVisitor;
-import antlrparser.visitor.MainOperatorVisitor;
-import antlrparser.visitor.RightExpressionVisitor;
-import antlrparser.visitor.StringPatternVisitor;
+import org.heraclito.lineparser.visitor.LeftExpressionVisitor;
+import org.heraclito.lineparser.visitor.MainOperatorVisitor;
+import org.heraclito.lineparser.visitor.RightExpressionVisitor;
+import org.heraclito.lineparser.visitor.StringPatternVisitor;
 import java.util.Objects;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;

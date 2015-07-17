@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antlrparser.visitor;
+package org.heraclito.lineparser.visitor;
 
 import antlrparser.LineParser;
 import antlrparser.LineBaseVisitor;

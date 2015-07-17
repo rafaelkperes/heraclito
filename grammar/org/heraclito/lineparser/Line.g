@@ -26,8 +26,18 @@ WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
 // ***************** parser rules:
 //our grammar accepts only salutation followed by an end symbol
 root
-    : '(' root ')'
-    | exp
+    : proofHeader           #isHeader
+    | '(' root ')'          #parenthesys
+    | exp                   #rootExpression
+    ;
+
+proofHeader
+    : hypothesysList '|-' exp
+    ;
+
+hypothesysList
+    : expvalue=exp                              #lastHypothesys
+    | expvalue=exp ',' hyplist=hypothesysList      #hypothesys
     ;
 
 exp
