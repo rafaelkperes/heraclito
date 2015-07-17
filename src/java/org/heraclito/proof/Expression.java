@@ -6,6 +6,7 @@ import antlrparser.visitor.LeftExpressionVisitor;
 import antlrparser.visitor.MainOperatorVisitor;
 import antlrparser.visitor.RightExpressionVisitor;
 import antlrparser.visitor.StringPatternVisitor;
+import java.util.Objects;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -125,5 +126,29 @@ class Expression {
     public String toString() {
         return this.expression;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this.expression);
+        hash = 13 * hash + Objects.hashCode(this.parserRoot);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Expression other = (Expression) obj;
+        if (!Objects.equals(this.expression, other.expression)) {
+            return false;
+        }
+        return true;
+    }
+    
     
 }
