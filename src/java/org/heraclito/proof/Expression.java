@@ -2,6 +2,7 @@ package org.heraclito.proof;
 
 import antlrparser.LineLexer;
 import antlrparser.LineParser;
+import antlrparser.visitor.MainOperatorVisitor;
 import antlrparser.visitor.StringPatternVisitor;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -55,7 +56,29 @@ class Expression {
         }
     }
     
+    /**
+     * Returns the main operator of the line or null if there's no operator.
+     * 
+     * @return main operator of the line or null if there's no operator.
+     */
+    public Operator getMainOperator() {
+        try {
+            MainOperatorVisitor operatorVisitor = new MainOperatorVisitor();
+            Operator ret = operatorVisitor.visit(this.parserRoot);
+            return ret;
+        } catch (IllegalStateException e) {
+            return null;
+        }
+    }
+    
     @Override
+    /**
+     * Returns the string for this expression.
+     * The string is the original entry modified to match the expression 
+     * pattern.
+     * 
+     * @return string representing the expression.
+     */
     public String toString() {
         return this.expression;
     }
