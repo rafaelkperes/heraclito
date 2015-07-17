@@ -38,21 +38,28 @@ public class ExpressionTest {
     }
 
     @Test
-    public void toString_StringEqualsInput_SameStringAsInput() {
+    public void toString_StringEqualsInput_SameStringAsInput() throws ProofException {
         Expression expression = new Expression("A->B");
         assertEquals("A->B", expression.toString());
     }
     
     @Test
-    public void toString_StringEqualsInput_StringAsInputToUpper() {
+    public void toString_StringEqualsInput_StringAsInputToUpper() throws ProofException {
         Expression expression = new Expression("a->b");
         assertEquals("A->B", expression.toString());
     }
     
     @Test
-    public void toString_StringEqualsInput_StringAsInputTrimmedParenthesis() {
+    public void toString_StringEqualsInput_StringAsInputTrimmedParenthesis() throws ProofException {
         Expression expression = new Expression("(A->B)");
         assertEquals("A->B", expression.toString());
     }
+    
+    @Test
+    public void toString_StringEqualsInput_StringAsInputUnchangedOperatorV() throws ProofException {
+        Expression expression = new Expression("avb");
+        assertEquals("AvB", expression.toString());
+    }
+    
     
 }

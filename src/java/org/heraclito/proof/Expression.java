@@ -26,7 +26,7 @@ class Expression {
     private ParserRuleContext parserRoot;
     
     Expression(String expression) throws ProofException {
-        setStringValue(expression.toUpperCase());
+        setStringValue(expression);
     }
     
     private void setStringValue(String stringValue) throws ProofException {

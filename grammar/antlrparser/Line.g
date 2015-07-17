@@ -20,7 +20,7 @@ package antlrparser;
 
 // ***************** lexer rules:
 //the grammar must contain at least one lexer rule
-VAR : (('A'..'U') | ('X'..'Z')) ;
+VAR : (('A'..'U') | ('X'..'Z') | ('a'..'u') | ('x'..'z')) ;
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
 
 // ***************** parser rules:
