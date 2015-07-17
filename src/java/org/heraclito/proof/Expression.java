@@ -2,7 +2,9 @@ package org.heraclito.proof;
 
 import antlrparser.LineLexer;
 import antlrparser.LineParser;
+import antlrparser.visitor.LeftExpressionVisitor;
 import antlrparser.visitor.MainOperatorVisitor;
+import antlrparser.visitor.RightExpressionVisitor;
 import antlrparser.visitor.StringPatternVisitor;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -71,7 +73,47 @@ class Expression {
         }
     }
     
-    @Override
+     /**
+     * Returns the expression to the left of the main operator, or null if
+     * there's no expression to the left of the main operator or no main
+     * operator.
+     *
+     * @return expression to the left of the main operator (may be null).
+     */
+    public Expression getLeftExpression() {
+        try {
+            LeftExpressionVisitor stringVisitor = new LeftExpressionVisitor();
+            String ret = stringVisitor.visit(this.parserRoot);
+            if (null == ret) {
+                return null;
+            }
+            return new Expression(ret);
+        } catch (ProofException | IllegalStateException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the expression to the right of the main operator, or null if
+     * there's no expression to the right of the main operator or no main
+     * operator.
+     *
+     * @return expression to the right of the main operator (may be null).
+     */
+    public Expression getRightExpression() {
+        try {
+            RightExpressionVisitor stringVisitor = new RightExpressionVisitor();
+            String ret = stringVisitor.visit(this.parserRoot);
+            if (null == ret) {
+                return null;
+            }
+            return new Expression(ret);
+        } catch (ProofException | IllegalStateException e) {
+            return null;
+        }
+    }
+    
+    
     /**
      * Returns the string for this expression.
      * The string is the original entry modified to match the expression 
@@ -79,6 +121,7 @@ class Expression {
      * 
      * @return string representing the expression.
      */
+    @Override
     public String toString() {
         return this.expression;
     }
