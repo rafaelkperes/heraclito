@@ -9,13 +9,13 @@ options
 //as the generated lexer will reside in org.meri.antlr_step_by_step.parsers 
 //package, we have to add package declaration on top of it
 @lexer::header {
-package antlrparser;
+package org.heraclito.parser.line;
 }
 
 //as the generated parser will reside in org.meri.antlr_step_by_step.parsers 
 //package, we have to add package declaration on top of it
 @parser::header {
-package antlrparser;
+package org.heraclito.parser.line;
 }
 
 // ***************** lexer rules:
@@ -26,20 +26,9 @@ WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
 // ***************** parser rules:
 //our grammar accepts only salutation followed by an end symbol
 root
-    : proofHeader           #isHeader
-    | '(' root ')'          #parenthesys
-    | exp                   #rootExpression
+    : '(' root ')'
+    | exp
     ;
-
-proofHeader
-    : hypothesysList '|-' exp
-    ;
-
-hypothesysList
-    : expvalue=exp                              #lastHypothesys
-    | expvalue=exp ',' hyplist=hypothesysList      #hypothesys
-    ;
-
 exp
     : VAR                                                               #var
     | operator='~' rightexp=exp                                         #negation

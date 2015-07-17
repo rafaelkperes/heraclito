@@ -9,7 +9,7 @@ package org.heraclito.proof;
  *
  * @author Rafael
  */
-class ProofException extends Exception {
+public class ProofException extends Exception {
     public ProofException(String message) {
         super(message);
     }

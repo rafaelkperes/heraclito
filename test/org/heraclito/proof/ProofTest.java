@@ -47,7 +47,7 @@ public class ProofTest {
     }
 
     @Test
-    public void validInput_ConstructorReceivesValidInputs_ReturnsHeaderAsStringOfInputExpressions() {
+    public void validInput_ConstructorReceivesValidInputs_ReturnsHeaderAsStringOfInputExpressions() throws ProofException {
         ArrayList<String> resultExpressions = new ArrayList<>();
         for (String validInput : validInputs) {
             Proof proof = new Proof(validInput);

@@ -1,11 +1,11 @@
 package org.heraclito.proof;
 
-import antlrparser.LineLexer;
-import antlrparser.LineParser;
-import org.heraclito.lineparser.visitor.LeftExpressionVisitor;
-import org.heraclito.lineparser.visitor.MainOperatorVisitor;
-import org.heraclito.lineparser.visitor.RightExpressionVisitor;
-import org.heraclito.lineparser.visitor.StringPatternVisitor;
+import org.heraclito.parser.line.LineLexer;
+import org.heraclito.parser.line.LineParser;
+import org.heraclito.parser.line.visitor.LeftExpressionVisitor;
+import org.heraclito.parser.line.visitor.MainOperatorVisitor;
+import org.heraclito.parser.line.visitor.RightExpressionVisitor;
+import org.heraclito.parser.line.visitor.StringPatternVisitor;
 import java.util.Objects;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -24,12 +24,12 @@ import org.antlr.v4.runtime.TokenStream;
  *
  * @author Rafael
  */
-class Expression {
+public class Expression {
 
     private String expression;
     private ParserRuleContext parserRoot;
     
-    Expression(String expression) throws ProofException {
+    public Expression(String expression) throws ProofException {
         setStringValue(expression);
     }
     

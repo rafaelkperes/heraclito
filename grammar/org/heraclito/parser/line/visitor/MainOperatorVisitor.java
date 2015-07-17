@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.heraclito.lineparser.visitor;
+package org.heraclito.parser.line.visitor;
 
-import antlrparser.LineParser;
-import antlrparser.LineBaseVisitor;
+import org.heraclito.parser.line.LineParser;
+import org.heraclito.parser.line.LineBaseVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.heraclito.proof.Operator;
 
