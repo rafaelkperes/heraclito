@@ -20,12 +20,10 @@ import static org.junit.Assert.*;
 public class ProofTest {
     
     private static String[] validInputs = {
-        "A, B |- A^B",
-        "A, B |- (A^B)",};
+        "A |- AvB",};
     
     private static String[] expectedHeaders = {
-        "A, B |- A^B",
-        "A, B |- A^B",};
+        "A |- AvB",};
     
     public ProofTest() {
     }

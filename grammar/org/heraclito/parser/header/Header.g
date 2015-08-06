@@ -20,15 +20,25 @@ package org.heraclito.parser.header;
 
 // ***************** lexer rules:
 //the grammar must contain at least one lexer rule
-ANYTHING : (.)+ ;
+VAR : (('A'..'U') | ('X'..'Z') | ('a'..'u') | ('x'..'z')) ;
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ -> skip ;
 
 // ***************** parser rules:
 root
-    : hyplist=hypothesysList '|-' result=ANYTHING
+    : hyplist=hypothesysList '|-' result=exp
     ;
 
 hypothesysList
-    : expvalue=ANYTHING                              #lastHypothesys
-    | expvalue=ANYTHING ',' hyplist=hypothesysList      #hypothesys
+    : expvalue=exp                              #lastHypothesys
+    | expvalue=exp ',' hyplist=hypothesysList      #hypothesys
+    ;
+
+exp
+    : VAR                                                               
+    | '~' exp                                         
+    | <assoc=right>exp '^' exp                
+    | <assoc=right>exp 'v' exp                
+    | exp '->' exp                            
+    | exp '<->' exp                           
+    | '(' exp ')'                                              
     ;
