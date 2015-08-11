@@ -8,11 +8,8 @@ import org.heraclito.parser.line.visitor.RightExpressionVisitor;
 import org.heraclito.parser.line.visitor.StringPatternVisitor;
 import java.util.Objects;
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.TokenStream;
 
 /*
@@ -33,21 +30,26 @@ public class Expression {
         setStringValue(expression);
     }
     
-    private void setStringValue(String stringValue) throws ProofException {
+    public static String formatExpression(String stringValue) throws ProofException {
         ANTLRInputStream input = new ANTLRInputStream(stringValue);
         TokenStream tokens = new CommonTokenStream(new LineLexer(input));
 
         LineParser parser = new LineParser(tokens);
 
-        parser.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer,
-                    Object offendingSymbol, int line, int charPositionInLine,
-                    String msg, RecognitionException e) {
-                throw new IllegalStateException("failed to parse at line "
-                        + line + " due to " + msg, e);
-            }
-        });
+        try {
+            ParserRuleContext tree = parser.root(); // parse
+            StringPatternVisitor stringVisitor = new StringPatternVisitor();
+            return stringVisitor.visit(tree);
+        } catch (IllegalStateException e) {
+            throw new ProofException("exception_invalid_expression_input");
+        }
+    }
+    
+    private void setStringValue(String stringValue) throws ProofException {
+        ANTLRInputStream input = new ANTLRInputStream(stringValue);
+        TokenStream tokens = new CommonTokenStream(new LineLexer(input));
+
+        LineParser parser = new LineParser(tokens);
 
         try {
             ParserRuleContext tree = parser.root(); // parse
@@ -55,7 +57,7 @@ public class Expression {
             StringPatternVisitor stringVisitor = new StringPatternVisitor();
             this.expression = stringVisitor.visit(tree);
         } catch (IllegalStateException e) {
-            throw new ProofException("exception_invalid_line_input");
+            throw new ProofException("exception_invalid_expression_input");
         }
     }
     

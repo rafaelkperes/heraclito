@@ -5,55 +5,78 @@
  */
 package org.heraclito.proof;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.TokenStream;
 import org.heraclito.parser.header.HeaderLexer;
 import org.heraclito.parser.header.HeaderParser;
+import org.heraclito.parser.header.visitor.HypothesysVisitor;
+import org.heraclito.parser.header.visitor.ResultVisitor;
 
 /**
  *
  * @author Rafael
  */
 public class Proof {
-    
+
+    ParserRuleContext treeroot;
+    List<Expression> hypothesis;
+    Expression result;
     String header;
 
     public Proof(String header) throws ProofException {
         setHeader(header);
     }
-    
-    private void setHeader(String header) throws ProofException {
+
+    private void setHeader(String header) throws ProofException {        
+        parseHeader(header);
+        setHypothesis();
+        setResult();
+        
+        String anotherHeader = "";
+        Iterator hypIt = this.hypothesis.iterator();
+        anotherHeader += hypIt.next().toString();
+        while(hypIt.hasNext()) {
+            
+            anotherHeader += ", " + hypIt.next().toString();
+        }
+        anotherHeader += " |- " + this.result.toString();
+        this.header = anotherHeader;
+    }
+
+    private void parseHeader(String header) throws ProofException {
         ANTLRInputStream input = new ANTLRInputStream(header);
         TokenStream tokens = new CommonTokenStream(new HeaderLexer(input));
 
         HeaderParser parser = new HeaderParser(tokens);
-
-        parser.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer,
-                    Object offendingSymbol, int line, int charPositionInLine,
-                    String msg, RecognitionException e) {
-                throw new IllegalStateException("failed to parse at line "
-                        + line + " due to " + msg, e);
-            }
-        });
-
         try {
-            ParserRuleContext tree = parser.root(); // parse
-            //HeaderPatternVisitor headerPatternVisitor = new HeaderPatternVisitor();
-            //this.header = headerPatternVisitor.visit(tree);
+            this.treeroot = parser.root(); // parse
         } catch (IllegalStateException e) {
             throw new ProofException("exception_invalid_header_input");
         }
     }
-    
+
+    private void setHypothesis() throws ProofException {
+        HypothesysVisitor hypothesisVisitor = new HypothesysVisitor();
+
+        List<Expression> hypothesisList = new ArrayList<>();
+        for (String hyp : hypothesisVisitor.visit(this.treeroot)) {
+            hypothesisList.add(new Expression(hyp));
+        }
+        this.hypothesis = hypothesisList;
+    }
+
+    private void setResult() throws ProofException {
+        ResultVisitor resultVisitor = new ResultVisitor();
+        this.result = new Expression(resultVisitor.visit(this.treeroot));
+    }
+
     public String getHeader() {
         return this.header;
     }
-    
+
 }
