@@ -32,9 +32,9 @@ root
 exp
     : VAR                                                               #var
     | operator='~' rightexp=exp                                         #negation
-    | <assoc=right>leftexp=exp operator='^' rightexp=exp                #conjunction
-    | <assoc=right>leftexp=exp operator='v' rightexp=exp                #disjunction
-    | leftexp=exp operator='->' rightexp=exp                            #implication
-    | leftexp=exp operator='<->' rightexp=exp                           #biconditional
+    | leftexp=exp operator='^' rightexp=exp                #conjunction
+    | leftexp=exp operator='v' rightexp=exp                #disjunction
+    | <assoc=right>leftexp=exp operator='->' rightexp=exp                            #implication
+    | <assoc=right>leftexp=exp operator='<->' rightexp=exp                           #biconditional
     | '(' expvalue=exp ')'                                              #toExp
     ;

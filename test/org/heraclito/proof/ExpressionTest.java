@@ -27,7 +27,9 @@ public class ExpressionTest {
         "a->b",
         "avb",
         "(avb)",
-        "(avb)vc",};
+        "(avb)vc",
+        "avbvc",
+        "a->b->c",};
 
     private static String[] expectedExpressions = {
         "A",
@@ -37,7 +39,9 @@ public class ExpressionTest {
         "A->B",
         "AvB",
         "AvB",
-        "(AvB)vC",};
+        "(AvB)vC",
+        "(AvB)vC",
+        "A->(B->C)"};
 
     private static Operator[] expectedOperators = {
         null,
@@ -47,7 +51,9 @@ public class ExpressionTest {
         Operator.IMPLICATION,
         Operator.DISJUNCTION,
         Operator.DISJUNCTION,
-        Operator.DISJUNCTION,};
+        Operator.DISJUNCTION,
+        Operator.DISJUNCTION,
+        Operator.IMPLICATION,};
 
     private static Object[] expectedLeftExpressions;
     private static Object[] expectedRightExpressions;
@@ -66,6 +72,8 @@ public class ExpressionTest {
         expectedLeftExpressionsBuilder.add(new Expression("A"));
         expectedLeftExpressionsBuilder.add(new Expression("A"));
         expectedLeftExpressionsBuilder.add(new Expression("(AvB)"));
+        expectedLeftExpressionsBuilder.add(new Expression("(AvB)"));
+        expectedLeftExpressionsBuilder.add(new Expression("A"));
         expectedLeftExpressions = expectedLeftExpressionsBuilder.toArray();
 
         ArrayList<Expression> expectedRightExpressionsBuilder = new ArrayList<>();
@@ -77,6 +85,8 @@ public class ExpressionTest {
         expectedRightExpressionsBuilder.add(new Expression("B"));
         expectedRightExpressionsBuilder.add(new Expression("B"));
         expectedRightExpressionsBuilder.add(new Expression("C"));
+        expectedRightExpressionsBuilder.add(new Expression("C"));
+        expectedRightExpressionsBuilder.add(new Expression("(B->C)"));
         expectedRightExpressions = expectedRightExpressionsBuilder.toArray();
     }
 
@@ -144,7 +154,7 @@ public class ExpressionTest {
         }
         assertArrayEquals(expectedLeftExpressions, resultLeftExpressions.toArray());
     }
-    
+
     @Test
     public void getLeftExpression_RightExpressionFromExpression_LeftExpressionFromVariousInputs() throws ProofException {
         ArrayList<Expression> resultRightExpressions = new ArrayList<>();

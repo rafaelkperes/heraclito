@@ -18,28 +18,34 @@ import static org.junit.Assert.*;
  * @author Rafael
  */
 public class ProofTest {
-    
+
     private static String[] validInputs = {
-        "A |- AvB",};
-    
+        "A |- AvB",
+        "AvB, BvC |- AvB",
+        "(A) |- ((A)vB)",
+        "AvBvC |- AvB",};
+
     private static String[] expectedHeaders = {
-        "A |- AvB",};
-    
+        "A |- AvB",
+        "AvB, BvC |- AvB",
+        "A |- AvB",
+        "(AvB)vC |- AvB",};
+
     public ProofTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -53,5 +59,5 @@ public class ProofTest {
         }
         assertArrayEquals(expectedHeaders, resultExpressions.toArray());
     }
-    
+
 }

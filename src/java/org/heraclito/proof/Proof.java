@@ -65,7 +65,7 @@ public class Proof {
 
         List<Expression> hypothesisList = new ArrayList<>();
         for (String hyp : hypothesisVisitor.visit(this.treeroot)) {
-            hypothesisList.add(new Expression(hyp));
+            hypothesisList.add(0, new Expression(hyp));
         }
         this.hypothesis = hypothesisList;
     }

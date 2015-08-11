@@ -36,9 +36,9 @@ hypothesysList
 exp
     : VAR                                                               
     | '~' exp                                         
-    | <assoc=right>exp '^' exp                
-    | <assoc=right>exp 'v' exp                
-    | exp '->' exp                            
-    | exp '<->' exp                           
+    | exp '^' exp                
+    | exp 'v' exp                
+    | <assoc=right>exp '->' exp                            
+    | <assoc=right>exp '<->' exp                           
     | '(' exp ')'                                              
     ;
