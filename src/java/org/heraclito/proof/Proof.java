@@ -27,7 +27,7 @@ public class Proof {
     private List<Expression> hypothesis;
     private Expression result;
     private String header;
-    
+
     private List<Line> lines;
 
     public Proof(String header) throws ProofException {
@@ -35,16 +35,16 @@ public class Proof {
         this.lines = new ArrayList();
     }
 
-    private void setHeader(String header) throws ProofException {        
+    private void setHeader(String header) throws ProofException {
         parseHeader(header);
         setHypothesis();
         setResult();
-        
+
         String anotherHeader = "";
         Iterator hypIt = this.hypothesis.iterator();
         anotherHeader += hypIt.next().toString();
-        while(hypIt.hasNext()) {
-            
+        while (hypIt.hasNext()) {
+
             anotherHeader += ", " + hypIt.next().toString();
         }
         anotherHeader += " |- " + this.result.toString();
@@ -81,13 +81,24 @@ public class Proof {
     public String getHeader() {
         return this.header;
     }
-    
+
     public void addAllHypothesis() {
-        for(Expression exp : this.hypothesis) {
+        for (Expression exp : this.hypothesis) {
             this.lines.add(new Line(exp, Rule.CH));
         }
     }
-    
+
+    public void addHypothesis(String expression) throws ProofException {
+        Expression param = new Expression(expression);
+        for(Expression it : this.hypothesis) {
+            if(param.equals(it)) {
+                this.lines.add(new Line(param, Rule.CH));
+                return;
+            }
+        }
+        throw new ProofException("exception_invalid_hypothesis_expression");
+    }
+
     @Override
     public String toString() {
         return this.printProof();
@@ -95,10 +106,10 @@ public class Proof {
 
     private String printProof() {
         StringBuilder proofString = new StringBuilder(this.getHeader());
-        for(Line line : this.lines) {
+        for (Line line : this.lines) {
             proofString.append("\n").append(line);
         }
         return proofString.toString();
     }
-    
+
 }
