@@ -84,14 +84,22 @@ public class Proof {
 
     public void addAllHypothesis() {
         for (Expression exp : this.hypothesis) {
-            this.lines.add(new Line(exp, Rule.CH));
+            boolean notYetInserted = true;
+            for (Line l : this.lines) {
+                if (exp.equals(l.getExpression()) && Rule.CH.equals(l.getAppliedRule())) {
+                    notYetInserted = false;
+                }
+            }
+            if (notYetInserted) {
+                this.lines.add(new Line(exp, Rule.CH));
+            }
         }
     }
 
     public void addHypothesis(String expression) throws ProofException {
         Expression param = new Expression(expression);
-        for(Expression it : this.hypothesis) {
-            if(param.equals(it)) {
+        for (Expression it : this.hypothesis) {
+            if (param.equals(it)) {
                 this.lines.add(new Line(param, Rule.CH));
                 return;
             }

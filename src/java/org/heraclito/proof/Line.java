@@ -66,6 +66,14 @@ class Line {
                 ret += ", " + this.appliedRuleLinesIndex.get(1);
         return ret + ")";
     }
+    
+    public Expression getExpression() {
+        return this.expression;
+    }
+
+    public Rule getAppliedRule() {
+        return appliedRule;
+    }
 
     @Override
     public String toString() {

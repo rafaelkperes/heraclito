@@ -65,13 +65,34 @@ public class ProofTest {
         System.out.println("Expected only header (A, B |- AvB):");
         Proof proof = new Proof("A, B |- AvB");
         System.out.println(proof);
+        System.out.println("");
     }
 
     @Test
-    public void toString_ProofWithHypothesis_PrintsProofsHeaderAndHypothesis() throws ProofException {
-        System.out.println("Expected header and hypothesis (A, B |- AvB):");
+    public void toString_ProofWithAllHypothesis_PrintsProofsHeaderAndAllHypothesis() throws ProofException {
+        System.out.println("Expected header and all hypothesis (A, B |- AvB):");
         Proof proof = new Proof("A, B |- AvB");
         proof.addAllHypothesis();
         System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void toString_ProofWithOneHypothesis_PrintsProofsHeaderAndOneHypothesis() throws ProofException {
+        System.out.println("Expected header and \"A\" hypothesis (A, B |- AvB):");
+        Proof proof = new Proof("A, B |- AvB");
+        proof.addHypothesis("A");
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void addAllHypothesys_AddOneHypothesysThenAddAll_PrintsProofsHeaderAndAllHypothesis() throws ProofException {
+        System.out.println("Expected header and all hypothesis (A, B |- AvB):");
+        Proof proof = new Proof("A, B |- AvB");
+        proof.addHypothesis("A");
+        proof.addAllHypothesis();
+        System.out.println(proof);
+        System.out.println("");
     }
 }
