@@ -23,10 +23,12 @@ import org.heraclito.parser.header.visitor.ResultVisitor;
  */
 public class Proof {
 
-    ParserRuleContext treeroot;
-    List<Expression> hypothesis;
-    Expression result;
-    String header;
+    private ParserRuleContext treeroot;
+    private List<Expression> hypothesis;
+    private Expression result;
+    private String header;
+    
+    
 
     public Proof(String header) throws ProofException {
         setHeader(header);
