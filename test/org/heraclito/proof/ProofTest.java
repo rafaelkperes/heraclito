@@ -59,5 +59,19 @@ public class ProofTest {
         }
         assertArrayEquals(expectedHeaders, resultExpressions.toArray());
     }
+    
+    @Test
+    public void toString_ProofOnlyHeader_PrintsProofsHeader() throws ProofException {
+        System.out.println("Expected only header (A, B |- AvB):");
+        Proof proof = new Proof("A, B |- AvB");
+        System.out.println(proof);
+    }
 
+    @Test
+    public void toString_ProofWithHypothesis_PrintsProofsHeaderAndHypothesis() throws ProofException {
+        System.out.println("Expected header and hypothesis (A, B |- AvB):");
+        Proof proof = new Proof("A, B |- AvB");
+        proof.addAllHypothesis();
+        System.out.println(proof);
+    }
 }

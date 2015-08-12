@@ -28,10 +28,11 @@ public class Proof {
     private Expression result;
     private String header;
     
-    
+    private List<Line> lines;
 
     public Proof(String header) throws ProofException {
         setHeader(header);
+        this.lines = new ArrayList();
     }
 
     private void setHeader(String header) throws ProofException {        
@@ -80,5 +81,24 @@ public class Proof {
     public String getHeader() {
         return this.header;
     }
+    
+    public void addAllHypothesis() {
+        for(Expression exp : this.hypothesis) {
+            this.lines.add(new Line(exp, Rule.CH));
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return this.printProof();
+    }
 
+    private String printProof() {
+        StringBuilder proofString = new StringBuilder(this.getHeader());
+        for(Line line : this.lines) {
+            proofString.append("\n").append(line);
+        }
+        return proofString.toString();
+    }
+    
 }
