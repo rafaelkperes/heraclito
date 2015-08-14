@@ -5,6 +5,7 @@
  */
 package org.heraclito.proof;
 
+import org.heraclito.proof.rule.Rule;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
