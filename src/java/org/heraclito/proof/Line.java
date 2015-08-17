@@ -16,7 +16,7 @@ import java.util.Arrays;
 class Line {
 
     private Expression expression;
-    private Rule appliedRule;
+    private Rule.ID appliedRule;
     private ArrayList<Integer> appliedRuleLinesIndex;
 
     public Line(Expression expression) {
@@ -29,22 +29,22 @@ class Line {
         this(new Expression(expression));
     }
 
-    public Line(Expression expression, Rule appliedRule) {
+    public Line(Expression expression, Rule.ID appliedRule) {
         this(expression);
         this.appliedRule = appliedRule;
     }
 
-    public Line(String expression, Rule appliedRule) throws ProofException {
+    public Line(String expression, Rule.ID appliedRule) throws ProofException {
         this(expression);
         this.appliedRule = appliedRule;
     }
 
-    public Line(Expression expression, Rule appliedRule, Integer[] appliedRuleLinesIndex) {
+    public Line(Expression expression, Rule.ID appliedRule, Integer[] appliedRuleLinesIndex) {
         this(expression, appliedRule);
         setAppliedRuleLines(appliedRuleLinesIndex);
     }
 
-    public Line(String expression, Rule appliedRule, Integer[] appliedRuleLinesIndex)
+    public Line(String expression, Rule.ID appliedRule, Integer[] appliedRuleLinesIndex)
             throws ProofException {
         this(expression, appliedRule);
         setAppliedRuleLines(appliedRuleLinesIndex);
@@ -72,7 +72,7 @@ class Line {
         return this.expression;
     }
 
-    public Rule getAppliedRule() {
+    public Rule.ID getAppliedRule() {
         return appliedRule;
     }
 

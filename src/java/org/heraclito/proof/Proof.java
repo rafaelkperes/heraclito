@@ -87,12 +87,12 @@ public class Proof {
         for (Expression exp : this.hypothesis) {
             boolean notYetInserted = true;
             for (Line l : this.lines) {
-                if (exp.equals(l.getExpression()) && Rule.CH.equals(l.getAppliedRule())) {
+                if (exp.equals(l.getExpression()) && Rule.ID.CH.equals(l.getAppliedRule())) {
                     notYetInserted = false;
                 }
             }
             if (notYetInserted) {
-                this.lines.add(new Line(exp, Rule.CH));
+                this.lines.add(new Line(exp, Rule.ID.CH));
             }
         }
     }
@@ -101,7 +101,7 @@ public class Proof {
         Expression param = new Expression(expression);
         for (Expression it : this.hypothesis) {
             if (param.equals(it)) {
-                this.lines.add(new Line(param, Rule.CH));
+                this.lines.add(new Line(param, Rule.ID.CH));
                 return;
             }
         }

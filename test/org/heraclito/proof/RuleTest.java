@@ -26,7 +26,7 @@ public class RuleTest {
         Expression expA = new Expression("A");
         Expression expB = new Expression("B");
         Expression expResult = new Expression("A^B");
-        Expression result = Rule.CJ.apply(expA, expB);
+        Expression result = Rule.ID.CJ.apply(expA, expB);
         assertEquals(expResult, result);
     }
 
@@ -36,7 +36,7 @@ public class RuleTest {
         Expression expB = null;
         Expression expResult = new Expression("A^B");
         try {
-            Expression result = Rule.CJ.apply(expA, expB);
+            Expression result = Rule.ID.CJ.apply(expA, expB);
             fail("Should throw ProofException.");
         } catch (ProofException e) {
         }
@@ -44,17 +44,17 @@ public class RuleTest {
     
     @Test
     public void testApply_DN_returnNewExpression() throws Exception {
-        Expression expA = new Expression("~~A");
-        Expression expResult = new Expression("A");
-        Expression result = Rule.DN.apply(expA);
-        assertEquals(expResult, result);
+        Expression firstInnerLine = new Expression("~~A");
+        Expression expected = new Expression("A");
+        Expression result = Rule.ID.DN.apply(expA);
+        assertEquals(expected, result);
     }
     
     @Test
     public void testApply_DNNullParameter_throwProofException() throws Exception {
         Expression expA = null;
         try {
-            Expression result = Rule.DN.apply(expA);
+            Expression result = Rule.ID.DN.apply(expA);
             fail("Should throw ProofException.");
         } catch (ProofException e) {
             System.out.println("Exception message should be about invalid parameters:");
@@ -66,7 +66,7 @@ public class RuleTest {
     public void testApply_DNParameterWithoutNeg_throwProofException() throws Exception {
         Expression expA = new Expression("AvBvC");
         try {
-            Expression result = Rule.DN.apply(expA);
+            Expression result = Rule.ID.DN.apply(expA);
             fail("Should throw ProofException.");
         } catch (ProofException e) {
             System.out.println("Exception message should be about wrong operator:");
@@ -78,7 +78,7 @@ public class RuleTest {
     public void testApply_DNParameterSingleNeg_throwProofException() throws Exception {
         Expression expA = new Expression("~C");
         try {
-            Expression result = Rule.DN.apply(expA);
+            Expression result = Rule.ID.DN.apply(expA);
             fail("Should throw ProofException.");
         } catch (ProofException e) {
             System.out.println("Exception message should be about wrong operator:");
