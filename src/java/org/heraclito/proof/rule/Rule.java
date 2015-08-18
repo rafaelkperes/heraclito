@@ -5,12 +5,12 @@
  */
 package org.heraclito.proof.rule;
 
-import org.heraclito.proof.rule.applier.DNApplier;
 import java.util.EnumMap;
 import java.util.Map;
 import org.heraclito.proof.Expression;
 import org.heraclito.proof.Operator;
 import org.heraclito.proof.ProofException;
+import org.heraclito.proof.rule.applier.*;
 
 /**
  *
@@ -19,8 +19,11 @@ import org.heraclito.proof.ProofException;
 public class Rule {
     public enum ID {
         CH("CH", "rule_id_ch", "rule_name_ch", 0, false),
+        AD("AD", "rule_id_ad", "rule_name_ad", 1, true),
         CJ("CJ", "rule_id_cj", "rule_name_cj", 2, false),
-        DN("DN", "rule_id_dn", "rule_name_dn", 1, false),;
+        DN("DN", "rule_id_dn", "rule_name_dn", 1, false),
+        EDJ("EDJ", "rule_id_edj", "rule_name_edj", 3, false),
+        ;
 
         private final String code;
         private final String id;
@@ -55,15 +58,6 @@ public class Rule {
         public boolean needsOutterExpression() {
             return this.needsOutterExpression;
         }
-        
-        public void start() {
-            
-        }
-        
-        public Expression apply() throws ProofException {
-            return null;
-            
-        }
 
         public Expression apply(Expression expA, Expression expB) throws ProofException {
             if (expA == null || expB == null) {
@@ -71,34 +65,21 @@ public class Rule {
             }
 
             return new Expression(expA.toString() + Operator.CONJUNCTION + expB.toString());
-        }
-
-        public Expression apply(Expression expA) throws ProofException {
-            if (expA == null) {
-                throw new ProofException("exception_invalid_parameters");
-            }
-
-            if (!Operator.NEGATION.equals(expA.getMainOperator())) {
-                throw new ProofException("exception_invalid_main_operator");
-            }
-
-            Expression singleNeg = new Expression(expA.getRightExpression().toString());
-            if (!Operator.NEGATION.equals(singleNeg.getMainOperator())) {
-                throw new ProofException("exception_invalid_main_operator");
-            }
-
-            return new Expression(singleNeg.getRightExpression().toString());
-        }
-
-        
+        }        
     }
 
     private static Rule instance = null;
+    
     private Map<Rule.ID, Applier> ruleAppliers;
+    
     
     public Rule() {
         this.ruleAppliers = new EnumMap<>(Rule.ID.class);
+        
         this.ruleAppliers.put(ID.DN, new DNApplier(ID.DN));
+        this.ruleAppliers.put(ID.CJ, new CJApplier(ID.CJ));
+        this.ruleAppliers.put(ID.AD, new ADApplier(ID.AD));
+        this.ruleAppliers.put(ID.EDJ, new EDJApplier(ID.EDJ));
     }
     
     public static Rule getInstance() {

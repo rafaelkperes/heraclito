@@ -5,9 +5,11 @@
  */
 package org.heraclito.proof;
 
+import org.heraclito.proof.rule.Applier;
 import org.heraclito.proof.rule.Rule;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -15,74 +17,133 @@ import static org.junit.Assert.*;
  */
 public class RuleTest {
 
+    Rule rule;
+
     public RuleTest() {
+    }
+
+    @Before
+    public void setUp() {
+        this.rule = Rule.getInstance();
     }
 
     /**
      * Test of apply method, of class Rule.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testApply_CJ_returnNewExpression() throws Exception {
-        Expression expA = new Expression("A");
-        Expression expB = new Expression("B");
-        Expression expResult = new Expression("A^B");
-        Expression result = Rule.ID.CJ.apply(expA, expB);
-        assertEquals(expResult, result);
-    }
+    public void testApply_AD_returnNewExpression() throws Exception {
+        Expression expected = new Expression("AvB");
 
-    @Test
-    public void testApply_CJNullParameter_throwProofException() throws Exception {
-        Expression expA = new Expression("A");
-        Expression expB = null;
-        Expression expResult = new Expression("A^B");
-        try {
-            Expression result = Rule.ID.CJ.apply(expA, expB);
-            fail("Should throw ProofException.");
-        } catch (ProofException e) {
-        }
-    }
-    
-    @Test
-    public void testApply_DN_returnNewExpression() throws Exception {
-        Expression firstInnerLine = new Expression("~~A");
-        Expression expected = new Expression("A");
-        Expression result = Rule.ID.DN.apply(expA);
+        Expression firstInnerLine = new Expression("A");
+        Expression outterLine = new Expression("AvB");
+
+        Applier applier = rule.getApplier(Rule.ID.AD);
+        applier.start();
+        applier.addInnerExpression(firstInnerLine);
+        applier.setOutterExpression(outterLine);
+        Expression result = applier.apply();
+
         assertEquals(expected, result);
     }
     
     @Test
-    public void testApply_DNNullParameter_throwProofException() throws Exception {
-        Expression expA = null;
+    public void testApply_CJ_returnNewExpression() throws Exception {
+        Expression expected = new Expression("A^B");
+
+        Expression firstInnerLine = new Expression("A");
+        Expression secondInnerLine = new Expression("B");
+
+        Applier applier = rule.getApplier(Rule.ID.CJ);
+        applier.start();
+        applier.addInnerExpression(firstInnerLine);
+        applier.addInnerExpression(secondInnerLine);
+        Expression result = applier.apply();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testApply_CJNullParameter_throwProofException() throws Exception {
+        // throws exception
+
+        Expression firstInnerLine = new Expression("A");
+        Expression secondInnerLine = null;
         try {
-            Expression result = Rule.ID.DN.apply(expA);
+            Applier applier = rule.getApplier(Rule.ID.CJ);
+            applier.start();
+            applier.addInnerExpression(firstInnerLine);
+            applier.addInnerExpression(secondInnerLine);
+            Expression result = applier.apply();
+            
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            System.out.println("Exception message should be about invalid parameters:");
-            System.out.println(e.getMessage());
+            assertEquals(e.getMessage(), "exception_missing_inner_expression");
         }
     }
-    
+
+    @Test
+    public void testApply_DN_returnNewExpression() throws Exception {
+        Expression expected = new Expression("A");
+
+        Expression firstInnerLine = new Expression("~~A");
+
+        Applier applier = rule.getApplier(Rule.ID.DN);
+        applier.start();
+        applier.addInnerExpression(firstInnerLine);
+        Expression result = applier.apply();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testApply_DNNullParameter_throwProofException() throws Exception {
+        // throws exception
+
+        Expression firstInnerLine = null;
+        try {
+            Applier applier = rule.getApplier(Rule.ID.DN);
+            applier.start();
+            applier.addInnerExpression(firstInnerLine);
+            Expression result = applier.apply();
+            
+            fail("Should throw ProofException.");
+        } catch (ProofException e) {
+            assertEquals(e.getMessage(), "exception_missing_inner_expression");
+        }
+    }
+
     @Test
     public void testApply_DNParameterWithoutNeg_throwProofException() throws Exception {
-        Expression expA = new Expression("AvBvC");
+        // throws exception
+
+        Expression firstInnerLine = new Expression("AvBvC");
         try {
-            Expression result = Rule.ID.DN.apply(expA);
+            Applier applier = rule.getApplier(Rule.ID.DN);
+            applier.start();
+            applier.addInnerExpression(firstInnerLine);
+            Expression result = applier.apply();
+            
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            System.out.println("Exception message should be about wrong operator:");
-            System.out.println(e.getMessage());
+            assertEquals(e.getMessage(), "exception_invalid_main_operator");
         }
     }
-    
+
     @Test
     public void testApply_DNParameterSingleNeg_throwProofException() throws Exception {
-        Expression expA = new Expression("~C");
+        // throws exception
+
+        Expression firstInnerLine = new Expression("~C");
         try {
-            Expression result = Rule.ID.DN.apply(expA);
+            Applier applier = rule.getApplier(Rule.ID.DN);
+            applier.start();
+            applier.addInnerExpression(firstInnerLine);
+            Expression result = applier.apply();
+            
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            System.out.println("Exception message should be about wrong operator:");
-            System.out.println(e.getMessage());
+            assertEquals(e.getMessage(), "exception_invalid_main_operator");
         }
     }
 

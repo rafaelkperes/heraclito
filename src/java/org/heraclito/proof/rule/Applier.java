@@ -17,7 +17,7 @@ import org.heraclito.proof.ProofException;
 public abstract class Applier {
 
     private final Rule.ID rule;
-    private final List<Expression> innerExpressions;
+    private List<Expression> innerExpressions;
     private Expression outterExpression;
 
     public Applier(Rule.ID rule) {
@@ -36,7 +36,9 @@ public abstract class Applier {
     }
 
     public void addInnerExpression(Expression exp) {
-        this.innerExpressions.add(exp);
+        if (exp != null) {
+            this.innerExpressions.add(exp);
+        }
     }
 
     public void setOutterExpression(Expression exp) {
@@ -52,4 +54,9 @@ public abstract class Applier {
     }
 
     public abstract Expression apply() throws ProofException;
+
+    public void start() {
+        this.innerExpressions = new ArrayList<>();
+        this.outterExpression = null;
+    }
 }
