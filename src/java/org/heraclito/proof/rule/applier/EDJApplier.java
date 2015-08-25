@@ -69,7 +69,7 @@ public class EDJApplier extends Applier {
         Expression leftDisjunction = disjunctionExpression.getLeftExpression();
         Expression rightDisjunction = disjunctionExpression.getRightExpression();
         Expression firstImpLeft = firstImplication.getLeftExpression();
-        Expression secondImpLeft = secondImplication.getRightExpression();
+        Expression secondImpLeft = secondImplication.getLeftExpression();
         
         if(!leftDisjunction.equals(firstImpLeft)) {
             if(!rightDisjunction.equals(firstImpLeft)) {

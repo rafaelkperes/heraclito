@@ -23,6 +23,10 @@ public class Rule {
         CJ("CJ", "rule_id_cj", "rule_name_cj", 2, false),
         DN("DN", "rule_id_dn", "rule_name_dn", 1, false),
         EDJ("EDJ", "rule_id_edj", "rule_name_edj", 3, false),
+        IEQ("IEQ", "rule_id_ieq", "rule_name_ieq", 2, false),
+        EEQ("EEQ", "rule_id_eeq", "rule_name_eeq", 1, true),
+        MP("MP", "rule_id_mp", "rule_name_mp", 2, false),
+        SP("SP", "rule_id_sp", "rule_name_sp", 1, true),
         ;
 
         private final String code;
@@ -80,6 +84,10 @@ public class Rule {
         this.ruleAppliers.put(ID.CJ, new CJApplier(ID.CJ));
         this.ruleAppliers.put(ID.AD, new ADApplier(ID.AD));
         this.ruleAppliers.put(ID.EDJ, new EDJApplier(ID.EDJ));
+        this.ruleAppliers.put(ID.IEQ, new IEQApplier(ID.IEQ));
+        this.ruleAppliers.put(ID.EEQ, new EEQApplier(ID.EEQ));
+        this.ruleAppliers.put(ID.MP, new MPApplier(ID.MP));
+        this.ruleAppliers.put(ID.SP, new SPApplier(ID.SP));
     }
     
     public static Rule getInstance() {

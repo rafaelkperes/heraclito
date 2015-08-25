@@ -5,7 +5,6 @@
  */
 package org.heraclito.proof;
 
-import org.heraclito.proof.rule.Rule;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +16,8 @@ import org.heraclito.parser.header.HeaderLexer;
 import org.heraclito.parser.header.HeaderParser;
 import org.heraclito.parser.header.visitor.HypothesysVisitor;
 import org.heraclito.parser.header.visitor.ResultVisitor;
+import org.heraclito.proof.rule.Applier;
+import org.heraclito.proof.rule.Rule;
 
 /**
  *
@@ -79,6 +80,7 @@ public class Proof {
         this.result = new Expression(resultVisitor.visit(this.treeroot));
     }
 
+    
     public String getHeader() {
         return this.header;
     }
@@ -108,6 +110,35 @@ public class Proof {
         throw new ProofException("exception_invalid_hypothesis_expression");
     }
 
+    public Line getLine(Integer index) {
+        return this.lines.get(index);
+    }
+    
+    private void checkLines(List<Integer> linesIndex) throws ProofException {
+        
+    }
+    
+    public void applyRule(Rule.ID ruleID, List<Integer> linesIndex, 
+            Expression outterExpression) throws ProofException {
+        Rule rule = Rule.getInstance();
+        Applier applier = rule.getApplier(ruleID);
+        applier.start();
+        
+        checkLines(linesIndex);
+        
+        for(Integer index : linesIndex) {
+            if(this.lines.get(index).isLocked()) {
+                throw new ProofException("exception_invalid_line");
+            }
+            applier.addInnerExpression(lines.get(index).getExpression());
+        }        
+        applier.setOutterExpression(outterExpression);
+        
+        Line newLine = new Line(applier.apply(), ruleID, linesIndex);
+        this.lines.add(newLine);
+    }
+    
+    
     @Override
     public String toString() {
         return this.printProof();

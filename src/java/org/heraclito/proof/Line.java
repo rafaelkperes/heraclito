@@ -5,24 +5,27 @@
  */
 package org.heraclito.proof;
 
-import org.heraclito.proof.rule.Rule;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import org.heraclito.proof.rule.Rule;
 
 /**
  *
  * @author gia
  */
-class Line {
+public class Line {
 
     private Expression expression;
     private Rule.ID appliedRule;
-    private ArrayList<Integer> appliedRuleLinesIndex;
+    private List<Integer> appliedRuleLinesIndex;
+    private Boolean locked;
+    
 
     public Line(Expression expression) {
         this.expression = expression;
         this.appliedRule = null;
         this.appliedRuleLinesIndex = new ArrayList<>();
+        this.locked = false;
     }
 
     public Line(String expression) throws ProofException {
@@ -39,19 +42,19 @@ class Line {
         this.appliedRule = appliedRule;
     }
 
-    public Line(Expression expression, Rule.ID appliedRule, Integer[] appliedRuleLinesIndex) {
+    public Line(Expression expression, Rule.ID appliedRule, List<Integer> appliedRuleLinesIndex) {
         this(expression, appliedRule);
         setAppliedRuleLines(appliedRuleLinesIndex);
     }
 
-    public Line(String expression, Rule.ID appliedRule, Integer[] appliedRuleLinesIndex)
+    public Line(String expression, Rule.ID appliedRule, List<Integer> appliedRuleLinesIndex)
             throws ProofException {
         this(expression, appliedRule);
         setAppliedRuleLines(appliedRuleLinesIndex);
     }
 
-    private void setAppliedRuleLines(Integer[] appliedRuleLinesIndex) {
-        this.appliedRuleLinesIndex = new ArrayList<>(Arrays.asList(appliedRuleLinesIndex));
+    private void setAppliedRuleLines(List<Integer> appliedRuleLinesIndex) {
+        this.appliedRuleLinesIndex = appliedRuleLinesIndex;
     }
 
     private Boolean hasLinesIndex() {
@@ -74,6 +77,14 @@ class Line {
 
     public Rule.ID getAppliedRule() {
         return appliedRule;
+    }
+    
+    public void lock() {
+        this.locked = true;
+    }
+    
+    public Boolean isLocked() {
+        return this.locked;
     }
 
     @Override
