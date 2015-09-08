@@ -6,6 +6,7 @@
 package org.heraclito.proof;
 
 import java.util.ArrayList;
+import org.heraclito.proof.rule.Rule;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -92,6 +93,23 @@ public class ProofTest {
         Proof proof = new Proof("A, B |- AvB");
         proof.addHypothesis("A");
         proof.addAllHypothesis();
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void applyRule_applyCJandCheckResult_addsNewRespectiveLine() throws ProofException {
+        System.out.println("Expected header, all hypothesis and CJ (A, B |- A^B):");
+        Proof proof = new Proof("A, B |- AvB");
+        proof.addHypothesis("A");
+        proof.addAllHypothesis();
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        innerExp.add(0);
+        innerExp.add(1);
+        
+        proof.applyRule(Rule.ID.CJ, innerExp, null);
+        
         System.out.println(proof);
         System.out.println("");
     }

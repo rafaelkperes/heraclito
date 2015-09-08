@@ -6,6 +6,7 @@
 package org.heraclito.proof.rule;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.heraclito.proof.Expression;
 import org.heraclito.proof.ProofException;
@@ -38,6 +39,12 @@ public abstract class Applier {
     public void addInnerExpression(Expression exp) {
         if (exp != null) {
             this.innerExpressions.add(exp);
+        }
+    }
+    
+    public void addInnerExpression(Collection<Expression> exp) {
+        if (exp != null) {
+            this.innerExpressions.addAll(exp);
         }
     }
 

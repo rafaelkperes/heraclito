@@ -19,6 +19,7 @@ public class Line {
     private Rule.ID appliedRule;
     private List<Integer> appliedRuleLinesIndex;
     private Boolean locked;
+    private Integer hypothesisLevel;
     
 
     public Line(Expression expression) {
@@ -77,6 +78,14 @@ public class Line {
 
     public Rule.ID getAppliedRule() {
         return appliedRule;
+    }
+
+    public Integer getHypothesisLevel() {
+        return hypothesisLevel;
+    }
+
+    public void setHypothesisLevel(Integer hypothesisLevel) {
+        this.hypothesisLevel = hypothesisLevel;
     }
     
     public void lock() {

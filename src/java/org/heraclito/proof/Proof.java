@@ -80,7 +80,6 @@ public class Proof {
         this.result = new Expression(resultVisitor.visit(this.treeroot));
     }
 
-    
     public String getHeader() {
         return this.header;
     }
@@ -113,32 +112,53 @@ public class Proof {
     public Line getLine(Integer index) {
         return this.lines.get(index);
     }
-    
-    private void checkLines(List<Integer> linesIndex) throws ProofException {
-        
+
+    private List<Expression> getExpressions(List<Integer> linesIndex)
+            throws ProofException {
+        ArrayList expList = new ArrayList<>();
+
+        for (Integer index : linesIndex) {
+            Line itLine;
+
+            try {
+                itLine = this.lines.get(index);
+                if (itLine.isLocked()) {
+                    throw new ProofException("exception_invalid_line");
+                }
+                expList.add(itLine.getExpression());
+            } catch (Exception e) {
+                throw new ProofException("exception_invalid_line");
+            }
+        }
+
+        return expList;
     }
-    
-    public void applyRule(Rule.ID ruleID, List<Integer> linesIndex, 
+
+    public void applyRule(Rule.ID ruleID, List<Integer> linesIndex,
             Expression outterExpression) throws ProofException {
         Rule rule = Rule.getInstance();
         Applier applier = rule.getApplier(ruleID);
         applier.start();
-        
-        checkLines(linesIndex);
-        
-        for(Integer index : linesIndex) {
-            if(this.lines.get(index).isLocked()) {
-                throw new ProofException("exception_invalid_line");
-            }
-            applier.addInnerExpression(lines.get(index).getExpression());
-        }        
+
+        applier.addInnerExpression(this.getExpressions(linesIndex));
         applier.setOutterExpression(outterExpression);
-        
-        Line newLine = new Line(applier.apply(), ruleID, linesIndex);
+
+        Expression result = applier.apply();
+
+        Line newLine = new Line(result, ruleID, linesIndex);
         this.lines.add(newLine);
     }
+
+    public Boolean isDone() {
+        Line lastLine = this.lines.get(this.lines.size() - 1);
+        if (this.result.equals(lastLine.getExpression())) {
+            return lastLine.getHypothesisLevel() == 0;
+        }
+
+        return false;
+    }
     
-    
+
     @Override
     public String toString() {
         return this.printProof();
