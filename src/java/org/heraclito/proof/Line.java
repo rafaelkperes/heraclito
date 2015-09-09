@@ -27,6 +27,7 @@ public class Line {
         this.appliedRule = null;
         this.appliedRuleLinesIndex = new ArrayList<>();
         this.locked = false;
+        this.hypothesisLevel = 0;
     }
 
     public Line(String expression) throws ProofException {

@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
+import org.heraclito.generic.Pair;
 import org.heraclito.parser.header.HeaderLexer;
 import org.heraclito.parser.header.HeaderParser;
 import org.heraclito.parser.header.visitor.HypothesysVisitor;
@@ -26,7 +27,7 @@ import org.heraclito.proof.rule.Rule;
 public class Proof {
 
     private ParserRuleContext treeroot;
-    private List<Expression> hypothesis;
+    private List<Pair<Expression, Boolean>> hypothesisPairs;
     private Expression result;
     private String header;
 
@@ -43,11 +44,12 @@ public class Proof {
         setResult();
 
         String anotherHeader = "";
-        Iterator hypIt = this.hypothesis.iterator();
-        anotherHeader += hypIt.next().toString();
-        while (hypIt.hasNext()) {
-
-            anotherHeader += ", " + hypIt.next().toString();
+        for(Iterator it = this.hypothesisPairs.iterator(); it.hasNext();) {
+            Pair<Expression, Boolean> p = (Pair<Expression, Boolean>) it.next();
+            anotherHeader += p.getKey().toString();
+            if(it.hasNext()) {
+                anotherHeader += ", ";
+            }
         }
         anotherHeader += " |- " + this.result.toString();
         this.header = anotherHeader;
@@ -66,13 +68,15 @@ public class Proof {
     }
 
     private void setHypothesis() throws ProofException {
-        HypothesysVisitor hypothesisVisitor = new HypothesysVisitor();
-
-        List<Expression> hypothesisList = new ArrayList<>();
+        HypothesysVisitor hypothesisVisitor = new HypothesysVisitor();        
+        
+        List<Pair<Expression, Boolean>> pairList = new ArrayList<>();
+        
         for (String hyp : hypothesisVisitor.visit(this.treeroot)) {
-            hypothesisList.add(0, new Expression(hyp));
+            pairList.add(0, new Pair<>(new Expression(hyp), false));
         }
-        this.hypothesis = hypothesisList;
+        
+        this.hypothesisPairs = pairList;                
     }
 
     private void setResult() throws ProofException {
@@ -84,28 +88,26 @@ public class Proof {
         return this.header;
     }
 
-    public void addAllHypothesis() {
-        for (Expression exp : this.hypothesis) {
-            boolean notYetInserted = true;
-            for (Line l : this.lines) {
-                if (exp.equals(l.getExpression()) && Rule.ID.CH.equals(l.getAppliedRule())) {
-                    notYetInserted = false;
-                }
-            }
-            if (notYetInserted) {
-                this.lines.add(new Line(exp, Rule.ID.CH));
+    public void addAllHypothesis() {        
+        for (Pair<Expression, Boolean> p : this.hypothesisPairs) {
+            if(!p.getValue()) {
+                this.lines.add(new Line(p.getKey(), Rule.ID.CH));
+                p.setValue(true);
             }
         }
     }
 
     public void addHypothesis(String expression) throws ProofException {
         Expression param = new Expression(expression);
-        for (Expression it : this.hypothesis) {
-            if (param.equals(it)) {
-                this.lines.add(new Line(param, Rule.ID.CH));
+        
+        for (Pair<Expression, Boolean> p : this.hypothesisPairs) {
+            if(param.equals(p.getKey())) {
+                this.lines.add(new Line(p.getKey(), Rule.ID.CH));
+                p.setValue(true);
                 return;
             }
         }
+        
         throw new ProofException("exception_invalid_hypothesis_expression");
     }
 
@@ -136,6 +138,14 @@ public class Proof {
 
     public void applyRule(Rule.ID ruleID, List<Integer> linesIndex,
             Expression outterExpression) throws ProofException {
+        if (this.isDone()) {
+            throw new ProofException("exception.concluded.proof");
+        }
+        
+        if(!this.hasAllHypothesis()) {
+            throw new ProofException("exception.not.concluded.hypothesis");
+        }
+
         Rule rule = Rule.getInstance();
         Applier applier = rule.getApplier(ruleID);
         applier.start();
@@ -148,16 +158,29 @@ public class Proof {
         Line newLine = new Line(result, ruleID, linesIndex);
         this.lines.add(newLine);
     }
+    
+    public Boolean canApplyRule() {
+        return !this.isDone() && this.hasAllHypothesis();
+    }
+    
+    private Boolean hasAllHypothesis() {
+        for (Pair<Expression, Boolean> p : this.hypothesisPairs) {
+            if(!p.getValue()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
     public Boolean isDone() {
         Line lastLine = this.lines.get(this.lines.size() - 1);
-        if (this.result.equals(lastLine.getExpression())) {
+        if (lastLine.getExpression().equals(this.result)) {
             return lastLine.getHypothesisLevel() == 0;
         }
 
         return false;
     }
-    
 
     @Override
     public String toString() {
@@ -170,6 +193,6 @@ public class Proof {
             proofString.append("\n").append(line);
         }
         return proofString.toString();
-    }
+    }    
 
 }

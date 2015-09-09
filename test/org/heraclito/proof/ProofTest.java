@@ -64,6 +64,7 @@ public class ProofTest {
     @Test
     public void toString_ProofOnlyHeader_PrintsProofsHeader() throws ProofException {
         System.out.println("Expected only header (A, B |- AvB):");
+        
         Proof proof = new Proof("A, B |- AvB");
         System.out.println(proof);
         System.out.println("");
@@ -72,6 +73,7 @@ public class ProofTest {
     @Test
     public void toString_ProofWithAllHypothesis_PrintsProofsHeaderAndAllHypothesis() throws ProofException {
         System.out.println("Expected header and all hypothesis (A, B |- AvB):");
+        
         Proof proof = new Proof("A, B |- AvB");
         proof.addAllHypothesis();
         System.out.println(proof);
@@ -90,6 +92,7 @@ public class ProofTest {
     @Test
     public void addAllHypothesys_AddOneHypothesysThenAddAll_PrintsProofsHeaderAndAllHypothesis() throws ProofException {
         System.out.println("Expected header and all hypothesis (A, B |- AvB):");
+        
         Proof proof = new Proof("A, B |- AvB");
         proof.addHypothesis("A");
         proof.addAllHypothesis();
@@ -100,6 +103,7 @@ public class ProofTest {
     @Test
     public void applyRule_applyCJandCheckResult_addsNewRespectiveLine() throws ProofException {
         System.out.println("Expected header, all hypothesis and CJ (A, B |- A^B):");
+        
         Proof proof = new Proof("A, B |- AvB");
         proof.addHypothesis("A");
         proof.addAllHypothesis();
@@ -109,6 +113,53 @@ public class ProofTest {
         innerExp.add(1);
         
         proof.applyRule(Rule.ID.CJ, innerExp, null);
+        
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void applyRule_applyCJonDoneProof_failsToApply() throws ProofException {
+        // throws exception
+        
+        Proof proof = new Proof("A, B |- A^B");
+        proof.addHypothesis("A");
+        proof.addAllHypothesis();
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        innerExp.add(0);
+        innerExp.add(1);
+        
+        proof.applyRule(Rule.ID.CJ, innerExp, null);
+        
+        try {
+            proof.applyRule(Rule.ID.CJ, innerExp, null);
+            fail("Should throw exception for concluded proof.");
+        } catch (ProofException pe) {
+            assertEquals(pe.getMessage(), "exception.concluded.proof");
+        }
+        
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void applyRule_applyCJwithoutAllHypothesis_failsToApply() throws ProofException {
+        // throws exception
+        
+        Proof proof = new Proof("A, B |- A^B");
+        proof.addHypothesis("A");
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        innerExp.add(0);
+        innerExp.add(0);
+        
+        try {
+            proof.applyRule(Rule.ID.CJ, innerExp, null);
+            fail("Should throw exception for not concluded hypothesis.");
+        } catch (ProofException pe) {
+            assertEquals(pe.getMessage(), "exception.not.concluded.hypothesis");
+        }
         
         System.out.println(proof);
         System.out.println("");
