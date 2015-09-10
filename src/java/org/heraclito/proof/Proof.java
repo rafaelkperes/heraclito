@@ -44,10 +44,10 @@ public class Proof {
         setResult();
 
         String anotherHeader = "";
-        for(Iterator it = this.hypothesisPairs.iterator(); it.hasNext();) {
+        for (Iterator it = this.hypothesisPairs.iterator(); it.hasNext();) {
             Pair<Expression, Boolean> p = (Pair<Expression, Boolean>) it.next();
             anotherHeader += p.getKey().toString();
-            if(it.hasNext()) {
+            if (it.hasNext()) {
                 anotherHeader += ", ";
             }
         }
@@ -68,15 +68,15 @@ public class Proof {
     }
 
     private void setHypothesis() throws ProofException {
-        HypothesysVisitor hypothesisVisitor = new HypothesysVisitor();        
-        
+        HypothesysVisitor hypothesisVisitor = new HypothesysVisitor();
+
         List<Pair<Expression, Boolean>> pairList = new ArrayList<>();
-        
+
         for (String hyp : hypothesisVisitor.visit(this.treeroot)) {
             pairList.add(0, new Pair<>(new Expression(hyp), false));
         }
-        
-        this.hypothesisPairs = pairList;                
+
+        this.hypothesisPairs = pairList;
     }
 
     private void setResult() throws ProofException {
@@ -88,10 +88,10 @@ public class Proof {
         return this.header;
     }
 
-    public void addAllHypothesis() {        
+    public void addAllHypothesis() {
         for (Pair<Expression, Boolean> p : this.hypothesisPairs) {
-            if(!p.getValue()) {
-                this.lines.add(new Line(p.getKey(), Rule.ID.CH));
+            if (!p.getValue()) {
+                this.lines.add(new Line(p.getKey(), Rule.ID.HIP));
                 p.setValue(true);
             }
         }
@@ -99,15 +99,15 @@ public class Proof {
 
     public void addHypothesis(String expression) throws ProofException {
         Expression param = new Expression(expression);
-        
+
         for (Pair<Expression, Boolean> p : this.hypothesisPairs) {
-            if(param.equals(p.getKey())) {
-                this.lines.add(new Line(p.getKey(), Rule.ID.CH));
+            if (param.equals(p.getKey())) {
+                this.lines.add(new Line(p.getKey(), Rule.ID.HIP));
                 p.setValue(true);
                 return;
             }
         }
-        
+
         throw new ProofException("exception_invalid_hypothesis_expression");
     }
 
@@ -141,8 +141,8 @@ public class Proof {
         if (this.isDone()) {
             throw new ProofException("exception.concluded.proof");
         }
-        
-        if(!this.hasAllHypothesis()) {
+
+        if (!this.hasAllHypothesis()) {
             throw new ProofException("exception.not.concluded.hypothesis");
         }
 
@@ -156,27 +156,47 @@ public class Proof {
         Expression result = applier.apply();
 
         Line newLine = new Line(result, ruleID, linesIndex);
+
+        /* setting hypothesis level */
+        int hypothesisLevel = 0;
+
+        try {
+            Line lastLine = this.lines.get(this.lines.size() - 1);
+            hypothesisLevel = lastLine.getHypothesisLevel();
+        } catch (IndexOutOfBoundsException e) {
+        }
+
+        if (Rule.ID.CH.equals(ruleID)) {
+            newLine.setHypothesisLevel(hypothesisLevel + 1);
+        } else {
+            newLine.setHypothesisLevel(hypothesisLevel);
+        }
+
+        /* adding new line */
         this.lines.add(newLine);
     }
-    
+
     public Boolean canApplyRule() {
         return !this.isDone() && this.hasAllHypothesis();
     }
-    
+
     private Boolean hasAllHypothesis() {
         for (Pair<Expression, Boolean> p : this.hypothesisPairs) {
-            if(!p.getValue()) {
+            if (!p.getValue()) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     public Boolean isDone() {
-        Line lastLine = this.lines.get(this.lines.size() - 1);
-        if (lastLine.getExpression().equals(this.result)) {
-            return lastLine.getHypothesisLevel() == 0;
+        try {
+            Line lastLine = this.lines.get(this.lines.size() - 1);
+            if (lastLine.getExpression().equals(this.result)) {
+                return lastLine.getHypothesisLevel() == 0;
+            }
+        } catch (IndexOutOfBoundsException e) {
         }
 
         return false;
@@ -193,6 +213,6 @@ public class Proof {
             proofString.append("\n").append(line);
         }
         return proofString.toString();
-    }    
+    }
 
 }

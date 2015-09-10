@@ -134,6 +134,7 @@ public class ProofTest {
         
         try {
             proof.applyRule(Rule.ID.CJ, innerExp, null);
+            System.out.println(proof);
             fail("Should throw exception for concluded proof.");
         } catch (ProofException pe) {
             assertEquals(pe.getMessage(), "exception.concluded.proof");

@@ -99,7 +99,8 @@ public class Line {
 
     @Override
     public String toString() {
-        String ret = this.expression.toString();
+        String ret = "(" + this.hypothesisLevel + ")";
+        ret += " "  + this.expression.toString();
         ret += '\t' + this.appliedRule.toString();
         ret += '\t' + this.getLinesIndexString();
         return ret;

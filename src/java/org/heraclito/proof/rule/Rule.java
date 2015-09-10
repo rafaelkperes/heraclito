@@ -18,6 +18,8 @@ import org.heraclito.proof.rule.applier.*;
  */
 public class Rule {
     public enum ID {
+        HIP("HIP", "rule_id_hip", "rule_name_hip", 0, false),
+        
         CH("CH", "rule_id_ch", "rule_name_ch", 0, false),
         AD("AD", "rule_id_ad", "rule_name_ad", 1, true),
         CJ("CJ", "rule_id_cj", "rule_name_cj", 2, false),
