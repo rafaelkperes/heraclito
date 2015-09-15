@@ -8,11 +8,13 @@ package org.heraclito.proof;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.heraclito.generic.Pair;
+import org.heraclito.generic.Triplet;
 import org.heraclito.parser.header.HeaderLexer;
 import org.heraclito.parser.header.HeaderParser;
 import org.heraclito.parser.header.visitor.HypothesysVisitor;
@@ -30,12 +32,14 @@ public class Proof {
     private List<Pair<Expression, Boolean>> hypothesisPairs;
     private Expression result;
     private String header;
+    private Stack<Triplet<Expression, Rule.ID, Integer>> expectedResult; /* from HRAA/HPC  - result, result rule, beginning line*/
 
     private List<Line> lines;
 
     public Proof(String header) throws ProofException {
         setHeader(header);
         this.lines = new ArrayList();
+        this.expectedResult = new Stack<>();
     }
 
     private void setHeader(String header) throws ProofException {
@@ -63,7 +67,7 @@ public class Proof {
         try {
             this.treeroot = parser.root(); // parse
         } catch (IllegalStateException e) {
-            throw new ProofException("exception_invalid_header_input");
+            throw new ProofException("exception.invalid.header.input");
         }
     }
 
@@ -108,7 +112,7 @@ public class Proof {
             }
         }
 
-        throw new ProofException("exception_invalid_hypothesis_expression");
+        throw new ProofException("exception.invalid.hypothesis.expression");
     }
 
     public Line getLine(Integer index) {
@@ -125,11 +129,11 @@ public class Proof {
             try {
                 itLine = this.lines.get(index);
                 if (itLine.isLocked()) {
-                    throw new ProofException("exception_invalid_line");
+                    throw new ProofException("exception.invalid.line");
                 }
                 expList.add(itLine.getExpression());
             } catch (Exception e) {
-                throw new ProofException("exception_invalid_line");
+                throw new ProofException("exception.invalid.line");
             }
         }
 
@@ -138,6 +142,7 @@ public class Proof {
 
     public void applyRule(Rule.ID ruleID, List<Integer> linesIndex,
             Expression outterExpression) throws ProofException {
+        /* checking proof state */
         if (this.isDone()) {
             throw new ProofException("exception.concluded.proof");
         }
@@ -146,6 +151,7 @@ public class Proof {
             throw new ProofException("exception.not.concluded.hypothesis");
         }
 
+        /* applying rule */
         Rule rule = Rule.getInstance();
         Applier applier = rule.getApplier(ruleID);
         applier.start();
@@ -155,25 +161,67 @@ public class Proof {
 
         Expression result = applier.apply();
 
-        Line newLine = new Line(result, ruleID, linesIndex);
+        Line newLine = new Line(result, applier.getRuleResult(), linesIndex);
 
         /* setting hypothesis level */
         int hypothesisLevel = 0;
 
         try {
-            Line lastLine = this.lines.get(this.lines.size() - 1);
+            Line lastLine = this.getLastLine();
             hypothesisLevel = lastLine.getHypothesisLevel();
-        } catch (IndexOutOfBoundsException e) {
+        } catch (Exception e) {
         }
 
         if (Rule.ID.CH.equals(ruleID)) {
             newLine.setHypothesisLevel(hypothesisLevel + 1);
+            if(Rule.ID.HPC.equals(applier.getRuleResult())) {
+                this.expectedResult.push(new Triplet<>(outterExpression, Rule.ID.PC, this.lines.size()));
+            } else if (Rule.ID.HRAA.equals(applier.getRuleResult())) {
+                this.expectedResult.push(new Triplet<>(outterExpression, Rule.ID.RAA, this.lines.size()));
+            } else {
+                throw new ProofException("exception.invalid.main.operator");
+            }            
         } else {
             newLine.setHypothesisLevel(hypothesisLevel);
         }
 
         /* adding new line */
         this.lines.add(newLine);
+
+        this.checkHypothesisResult();
+    }
+
+    private void checkHypothesisResult() {
+        if (!this.expectedResult.isEmpty()) {
+            Expression expected = this.expectedResult.peek().getKey();
+            Expression actual = this.getLastLine().getExpression();
+            Rule.ID rule = this.expectedResult.peek().getValue();
+            
+            ArrayList<Integer> lineList = new ArrayList();
+            lineList.add(this.expectedResult.peek().getComplement());
+            lineList.add(this.lines.size() - 1);
+            
+            if(Rule.ID.PC.equals(rule)) {
+                if(expected.getRightExpression().equals(actual)) {
+                    this.lines.add(new Line(expected, rule, lineList));
+                    return;
+                }
+            } else if(Rule.ID.RAA.equals(rule)) {
+                for(Line l : this.lines) {
+                    if(actual.isContradictionOf(l.getExpression())) {
+                        this.lines.add(new Line(expected, rule, lineList));
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private Line getLastLine() {
+        if (this.lines.isEmpty()) {
+            return null;
+        }
+        return this.lines.get(this.lines.size() - 1);
     }
 
     public Boolean canApplyRule() {
@@ -192,7 +240,7 @@ public class Proof {
 
     public Boolean isDone() {
         try {
-            Line lastLine = this.lines.get(this.lines.size() - 1);
+            Line lastLine = this.getLastLine();
             if (lastLine.getExpression().equals(this.result)) {
                 return lastLine.getHypothesisLevel() == 0;
             }

@@ -28,12 +28,12 @@ public class DNApplier extends Applier {
         Expression firstInnerExpression = getInnerExpression(0);
 
         if (!Operator.NEGATION.equals(firstInnerExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
 
         Expression reducedExpressionSingleNeg = new Expression(firstInnerExpression.getRightExpression().toString());
         if (!Operator.NEGATION.equals(reducedExpressionSingleNeg.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
 
         return new Expression(reducedExpressionSingleNeg.getRightExpression().toString());

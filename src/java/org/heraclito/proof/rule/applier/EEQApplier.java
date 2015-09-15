@@ -29,11 +29,11 @@ public class EEQApplier extends Applier {
         Expression outterExpression = getOutterExpression();
 
         if (!Operator.BICONDITIONAL.equals(firstInnerExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
         
         if (!Operator.IMPLICATION.equals(outterExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_outter_expression");
+            throw new ProofException("exception.invalid.outter.expression");
         }
         
         if(firstInnerExpression.getLeftExpression().equals(outterExpression.getLeftExpression())
@@ -43,7 +43,7 @@ public class EEQApplier extends Applier {
                 && firstInnerExpression.getRightExpression().equals(outterExpression.getLeftExpression())) {
             return outterExpression;
         } else {
-            throw new ProofException("exception_invalid_outter_expression");
+            throw new ProofException("exception.invalid.outter.expression");
         }
 
         //return outterExpression;

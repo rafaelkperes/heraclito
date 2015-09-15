@@ -33,7 +33,7 @@ public class EDJApplier extends Applier {
         if (Operator.DISJUNCTION.equals(firstInnerExpression.getMainOperator())) {
             if (!Operator.IMPLICATION.equals(secondInnerExpression.getMainOperator())
                     || !Operator.IMPLICATION.equals(thirdInnerExpression.getMainOperator())) {
-                throw new ProofException("exception_invalid_main_operator");
+                throw new ProofException("exception.invalid.main.operator");
             }
 
             disjunctionExpression = firstInnerExpression;
@@ -42,7 +42,7 @@ public class EDJApplier extends Applier {
         } else if (Operator.DISJUNCTION.equals(secondInnerExpression.getMainOperator())) {
             if (!Operator.IMPLICATION.equals(firstInnerExpression.getMainOperator())
                     || !Operator.IMPLICATION.equals(thirdInnerExpression.getMainOperator())) {
-                throw new ProofException("exception_invalid_main_operator");
+                throw new ProofException("exception.invalid.main.operator");
             }
 
             disjunctionExpression = secondInnerExpression;
@@ -51,19 +51,19 @@ public class EDJApplier extends Applier {
         } else if (Operator.DISJUNCTION.equals(thirdInnerExpression.getMainOperator())) {
             if (!Operator.IMPLICATION.equals(firstInnerExpression.getMainOperator())
                     || !Operator.IMPLICATION.equals(secondInnerExpression.getMainOperator())) {
-                throw new ProofException("exception_invalid_main_operator");
+                throw new ProofException("exception.invalid.main.operator");
             }
 
             disjunctionExpression = thirdInnerExpression;
             firstImplication = firstInnerExpression;
             secondImplication = secondInnerExpression;
         } else {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
 
         if (!firstImplication.getRightExpression()
                 .equals(secondImplication.getRightExpression())) {
-            throw new ProofException("exception_invalid_expression");
+            throw new ProofException("exception.invalid.expression");
         }
         
         Expression leftDisjunction = disjunctionExpression.getLeftExpression();
@@ -73,12 +73,12 @@ public class EDJApplier extends Applier {
         
         if(!leftDisjunction.equals(firstImpLeft)) {
             if(!rightDisjunction.equals(firstImpLeft)) {
-                throw new ProofException("exception_invalid_expression");
+                throw new ProofException("exception.invalid.expression");
             } else if(!leftDisjunction.equals(firstImpLeft)) {
-                throw new ProofException("exception_invalid_expression");
+                throw new ProofException("exception.invalid.expression");
             }
         } else if(!rightDisjunction.equals(secondImpLeft)) {
-            throw new ProofException("exception_invalid_expression");
+            throw new ProofException("exception.invalid.expression");
         }
 
         return firstImplication.getRightExpression();

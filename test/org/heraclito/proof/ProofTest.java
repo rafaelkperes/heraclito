@@ -165,4 +165,46 @@ public class ProofTest {
         System.out.println(proof);
         System.out.println("");
     }
+    
+    @Test
+    public void applyRule_applyCH_createsHPCLine() throws ProofException {
+        System.out.println("Expected header, all hypothesis and HRAA (A) (A, B |- A^B):");
+        
+        Proof proof = new Proof("A, B |- A^B");
+        
+        proof.addAllHypothesis();
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        Expression outterExp = new Expression("~A");
+        
+        try {
+            proof.applyRule(Rule.ID.CH, innerExp, outterExp);
+        } catch (ProofException pe) {
+            fail(pe.getMessage());
+        }
+        
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void applyRule_applyCH_doesRAAAutomatically() throws ProofException {
+        System.out.println("Expected header, all hypothesis, HRAA amd RAA (A, B |- A^B):");
+        
+        Proof proof = new Proof("A, B |- A^B");
+        
+        proof.addAllHypothesis();
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        Expression outterExp = new Expression("~A");
+        
+        try {
+            proof.applyRule(Rule.ID.CH, innerExp, outterExp);
+        } catch (ProofException pe) {
+            fail(pe.getMessage());
+        }
+        
+        System.out.println(proof);
+        System.out.println("");
+    }
 }

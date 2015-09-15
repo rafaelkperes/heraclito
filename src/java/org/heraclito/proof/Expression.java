@@ -1,16 +1,17 @@
 package org.heraclito.proof;
 
+import java.util.Objects;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.heraclito.parser.line.LineLexer;
 import org.heraclito.parser.line.LineParser;
 import org.heraclito.parser.line.visitor.LeftExpressionVisitor;
 import org.heraclito.parser.line.visitor.MainOperatorVisitor;
 import org.heraclito.parser.line.visitor.RightExpressionVisitor;
 import org.heraclito.parser.line.visitor.StringPatternVisitor;
-import java.util.Objects;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.TokenStream;
+import org.heraclito.proof.rule.Rule;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -41,7 +42,7 @@ public class Expression {
             StringPatternVisitor stringVisitor = new StringPatternVisitor();
             return stringVisitor.visit(tree);
         } catch (IllegalStateException e) {
-            throw new ProofException("exception_invalid_expression_input");
+            throw new ProofException("exception.invalid.expression.input");
         }
     }
     
@@ -57,7 +58,7 @@ public class Expression {
             StringPatternVisitor stringVisitor = new StringPatternVisitor();
             this.expression = stringVisitor.visit(tree);
         } catch (IllegalStateException e) {
-            throw new ProofException("exception_invalid_expression_input");
+            throw new ProofException("exception.invalid.expression.input");
         }
     }
     
@@ -135,6 +136,20 @@ public class Expression {
         hash = 13 * hash + Objects.hashCode(this.expression);
         hash = 13 * hash + Objects.hashCode(this.parserRoot);
         return hash;
+    }
+    
+    public boolean isContradictionOf(Expression exp) {
+        if(Operator.NEGATION.equals(this.getMainOperator())) {
+            if(this.getRightExpression().equals(exp)) {
+                return true;
+            }
+        }
+        if(Operator.NEGATION.equals(exp.getMainOperator())) {
+            if(exp.getRightExpression().equals(this)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

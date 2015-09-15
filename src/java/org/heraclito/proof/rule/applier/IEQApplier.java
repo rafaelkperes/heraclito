@@ -30,19 +30,19 @@ public class IEQApplier extends Applier {
         Expression secondInnerExpression = getInnerExpression(1);
         
         if(!Operator.IMPLICATION.equals(firstInnerExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }        
         if(!Operator.IMPLICATION.equals(secondInnerExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
         
         if(!firstInnerExpression.getLeftExpression().equals(
             secondInnerExpression.getRightExpression())) {
-            throw new ProofException("exception_invalid_expression");
+            throw new ProofException("exception.invalid.expression");
         }        
         if(!secondInnerExpression.getLeftExpression().equals(
             firstInnerExpression.getRightExpression())) {
-            throw new ProofException("exception_invalid_expression");
+            throw new ProofException("exception.invalid.expression");
         }
         
         return new Expression(firstInnerExpression.getLeftExpression().toString()

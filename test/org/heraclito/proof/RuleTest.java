@@ -78,7 +78,7 @@ public class RuleTest {
             
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            assertEquals(e.getMessage(), "exception_missing_inner_expression");
+            assertEquals(e.getMessage(), "exception.missing.inner.expression");
         }
     }
 
@@ -109,7 +109,7 @@ public class RuleTest {
             
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            assertEquals(e.getMessage(), "exception_missing_inner_expression");
+            assertEquals(e.getMessage(), "exception.missing.inner.expression");
         }
     }
 
@@ -126,7 +126,7 @@ public class RuleTest {
             
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            assertEquals(e.getMessage(), "exception_invalid_main_operator");
+            assertEquals(e.getMessage(), "exception.invalid.main.operator");
         }
     }
 
@@ -143,7 +143,7 @@ public class RuleTest {
             
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            assertEquals(e.getMessage(), "exception_invalid_main_operator");
+            assertEquals(e.getMessage(), "exception.invalid.main.operator");
         }
     }
 

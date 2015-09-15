@@ -81,7 +81,7 @@ public class EDJApplierTest {
             Expression result = applier.apply();
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            assertEquals(e.getMessage(), "exception_invalid_main_operator");
+            assertEquals(e.getMessage(), "exception.invalid.main.operator");
         }
     }
     
@@ -104,7 +104,7 @@ public class EDJApplierTest {
             Expression result = applier.apply();
             fail("Should throw ProofException.");
         } catch (ProofException e) {
-            assertEquals(e.getMessage(), "exception_invalid_expression");
+            assertEquals(e.getMessage(), "exception.invalid.expression");
         }
     }
 

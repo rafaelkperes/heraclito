@@ -29,7 +29,7 @@ public class MPApplier extends Applier {
 
         if(!Operator.IMPLICATION.equals(firstInnerExpression.getMainOperator())
                 && !Operator.IMPLICATION.equals(secondInnerExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
         
         if (Operator.IMPLICATION.equals(firstInnerExpression.getMainOperator())
@@ -39,7 +39,7 @@ public class MPApplier extends Applier {
                 && firstInnerExpression.equals(secondInnerExpression.getLeftExpression()))  {
             return secondInnerExpression.getRightExpression();
         } else {
-            throw new ProofException("exception_invalid_expression");
+            throw new ProofException("exception.invalid.expression");
         }
 
         //return null;

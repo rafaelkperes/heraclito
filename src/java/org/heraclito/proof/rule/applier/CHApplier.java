@@ -15,28 +15,25 @@ import org.heraclito.proof.rule.Rule;
  *
  * @author gia
  */
-public class ADApplier extends Applier {
+public class CHApplier extends Applier {
 
-    public ADApplier(Rule.ID rule) {
+    public CHApplier(Rule.ID rule) {
         super(rule);
     }
 
     @Override
     public Expression apply() throws ProofException {
         checkParameters();
-        Expression firstInnerExpression = getInnerExpression(0);
         Expression outterExpression = getOutterExpression();
-
-        if (!Operator.DISJUNCTION.equals(outterExpression.getMainOperator())) {
+        if (Operator.NEGATION.equals(outterExpression.getMainOperator())) {
+            this.setRuleResult(Rule.ID.HRAA);
+            return outterExpression.getRightExpression();
+        } else if (Operator.IMPLICATION.equals(outterExpression.getMainOperator())) {
+            this.setRuleResult(Rule.ID.HPC);
+            return outterExpression.getLeftExpression();
+        } else {
             throw new ProofException("exception.invalid.main.operator");
         }
-
-        if (!firstInnerExpression.equals(outterExpression.getLeftExpression())
-                && !firstInnerExpression.equals(outterExpression.getRightExpression())) {
-            throw new ProofException("exception.invalid.outter.expression");
-        }
-
-        return outterExpression;
     }
 
 }

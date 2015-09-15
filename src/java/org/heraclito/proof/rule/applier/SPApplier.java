@@ -29,12 +29,12 @@ public class SPApplier extends Applier {
         Expression outterExpression = getOutterExpression();
 
         if(!Operator.CONJUNCTION.equals(firstInnerExpression.getMainOperator())) {
-            throw new ProofException("exception_invalid_main_operator");
+            throw new ProofException("exception.invalid.main.operator");
         }
         
         if(!outterExpression.equals(firstInnerExpression.getLeftExpression())
                 && !outterExpression.equals(firstInnerExpression.getRightExpression())) {
-            throw new ProofException("exception_invalid_outter_expression");
+            throw new ProofException("exception.invalid.outter.expression");
         }
 
         return outterExpression;
