@@ -174,13 +174,13 @@ public class Proof {
 
         if (Rule.ID.CH.equals(ruleID)) {
             newLine.setHypothesisLevel(hypothesisLevel + 1);
-            if(Rule.ID.HPC.equals(applier.getRuleResult())) {
+            if (Rule.ID.HPC.equals(applier.getRuleResult())) {
                 this.expectedResult.push(new Triplet<>(outterExpression, Rule.ID.PC, this.lines.size()));
             } else if (Rule.ID.HRAA.equals(applier.getRuleResult())) {
                 this.expectedResult.push(new Triplet<>(outterExpression, Rule.ID.RAA, this.lines.size()));
             } else {
                 throw new ProofException("exception.invalid.main.operator");
-            }            
+            }
         } else {
             newLine.setHypothesisLevel(hypothesisLevel);
         }
@@ -193,26 +193,27 @@ public class Proof {
 
     private void checkHypothesisResult() {
         if (!this.expectedResult.isEmpty()) {
+            Rule.ID ruleID = this.expectedResult.peek().getValue();
+            
             Expression expected = this.expectedResult.peek().getKey();
             Expression actual = this.getLastLine().getExpression();
-            Rule.ID rule = this.expectedResult.peek().getValue();
             
-            ArrayList<Integer> lineList = new ArrayList();
-            lineList.add(this.expectedResult.peek().getComplement());
-            lineList.add(this.lines.size() - 1);
+            ArrayList<Integer> lineIndexList = new ArrayList();
+            lineIndexList.add(this.expectedResult.peek().getComplement()); // first hypothesis line
+            lineIndexList.add(this.lines.size() - 1); // last line
             
-            if(Rule.ID.PC.equals(rule)) {
-                if(expected.getRightExpression().equals(actual)) {
-                    this.lines.add(new Line(expected, rule, lineList));
-                    return;
-                }
-            } else if(Rule.ID.RAA.equals(rule)) {
-                for(Line l : this.lines) {
-                    if(actual.isContradictionOf(l.getExpression())) {
-                        this.lines.add(new Line(expected, rule, lineList));
-                        return;
-                    }
-                }
+            try {
+                Rule rule = Rule.getInstance();
+                Applier applier = rule.getApplier(ruleID);
+
+                applier.addInnerExpression(actual);
+                applier.setOutterExpression(expected);
+                Expression ret = applier.apply();
+                Line line = new Line(expected, ruleID, lineIndexList);
+                line.setHypothesisLevel(this.getLastLine().getHypothesisLevel() - 1);
+                this.lines.add(line);
+                return;
+            } catch (ProofException pe) {
             }
         }
     }

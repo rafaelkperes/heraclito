@@ -189,14 +189,14 @@ public class ProofTest {
     
     @Test
     public void applyRule_applyCH_doesRAAAutomatically() throws ProofException {
-        System.out.println("Expected header, all hypothesis, HRAA amd RAA (A, B |- A^B):");
+        System.out.println("Expected header, all hypothesis, HRAA and RAA (A, B |- A^B):");
         
         Proof proof = new Proof("A, B |- A^B");
         
         proof.addAllHypothesis();
         
         ArrayList<Integer> innerExp = new ArrayList<>();
-        Expression outterExp = new Expression("~A");
+        Expression outterExp = new Expression("A->B");
         
         try {
             proof.applyRule(Rule.ID.CH, innerExp, outterExp);
@@ -207,4 +207,5 @@ public class ProofTest {
         System.out.println(proof);
         System.out.println("");
     }
+
 }

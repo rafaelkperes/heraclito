@@ -23,8 +23,8 @@ public class Rule {
         CH("CH", "rule.id.ch", "rule.name.ch", 0, true),
             HRAA("HPC", "rule.id.hraa", "rule.name.hraa", 0, true),
             HPC("HRAA", "rule.id.hpc", "rule.name.hpc", 0, true),
-            RAA("RAA", "rule.id.raa", "rule.name.raa", 0, false),
-            PC("PC", "rule.id.pc", "rule.name.pc", 0, false),
+            RAA("RAA", "rule.id.raa", "rule.name.raa", 1, true),
+            PC("PC", "rule.id.pc", "rule.name.pc", 1, true),
         AD("AD", "rule.id.ad", "rule.name.ad", 1, true),
         CJ("CJ", "rule.id.cj", "rule.name.cj", 2, false),
         DN("DN", "rule.id.dn", "rule.name.dn", 1, false),
@@ -95,6 +95,8 @@ public class Rule {
         this.ruleAppliers.put(ID.MP, new MPApplier(ID.MP));
         this.ruleAppliers.put(ID.SP, new SPApplier(ID.SP));
         this.ruleAppliers.put(ID.CH, new CHApplier(ID.CH));
+        this.ruleAppliers.put(ID.PC, new CHApplier(ID.PC));
+        this.ruleAppliers.put(ID.RAA, new CHApplier(ID.RAA));
     }
     
     public static Rule getInstance() {
