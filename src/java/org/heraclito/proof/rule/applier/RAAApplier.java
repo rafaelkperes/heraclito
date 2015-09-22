@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.heraclito.proof.rule.applier;
 
 import org.heraclito.proof.Expression;
@@ -25,30 +24,30 @@ public class RAAApplier extends Applier {
     @Override
     public Expression apply() throws ProofException {
         checkParameters();
-        
+
         Expression innerExpression = this.getInnerExpression(0);
         Expression outterExpression = this.getOutterExpression();
-        
-        if(!Operator.CONJUNCTION.equals(innerExpression.getMainOperator())) {
+
+        if (!Operator.CONJUNCTION.equals(innerExpression.getMainOperator())) {
             throw new ProofException("exception.invalid.main.operator");
         }
-        
+
         Expression exp1 = innerExpression.getLeftExpression();
         Expression exp2 = innerExpression.getRightExpression();
-        
-        if(Operator.NEGATION.equals(exp1.getMainOperator())) {
-            if(exp1.getRightExpression().equals(exp2)) {
+
+        if (Operator.NEGATION.equals(exp1.getMainOperator())) {
+            if (exp1.getRightExpression().equals(exp2)) {
                 return outterExpression;
             }
         }
-        
-        if(Operator.NEGATION.equals(exp2.getMainOperator())) {
-            if(exp2.getRightExpression().equals(exp1)) {
+
+        if (Operator.NEGATION.equals(exp2.getMainOperator())) {
+            if (exp2.getRightExpression().equals(exp1)) {
                 return outterExpression;
             }
         }
-        
+
         throw new ProofException("exception.invalid.inner.expression");
     }
-    
+
 }

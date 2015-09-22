@@ -206,6 +206,7 @@ public class Proof {
                 Rule rule = Rule.getInstance();
                 Applier applier = rule.getApplier(ruleID);
 
+                applier.start();
                 applier.addInnerExpression(actual);
                 applier.setOutterExpression(expected);
                 Expression ret = applier.apply();

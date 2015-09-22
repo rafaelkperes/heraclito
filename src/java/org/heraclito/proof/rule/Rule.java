@@ -11,6 +11,7 @@ import org.heraclito.proof.Expression;
 import org.heraclito.proof.Operator;
 import org.heraclito.proof.ProofException;
 import org.heraclito.proof.rule.applier.*;
+import org.heraclito.proof.rule.applier.derived.CLApplier;
 
 /**
  *
@@ -33,6 +34,8 @@ public class Rule {
         EEQ("EEQ", "rule.id.eeq", "rule.name.eeq", 1, true),
         MP("MP", "rule.id.mp", "rule.name.mp", 2, false),
         SP("SP", "rule.id.sp", "rule.name.sp", 1, true),
+        
+        CL("CL", "rule.id.cl", "rule.name.cl", 1, false),
         ;
 
         private final String code;
@@ -95,8 +98,10 @@ public class Rule {
         this.ruleAppliers.put(ID.MP, new MPApplier(ID.MP));
         this.ruleAppliers.put(ID.SP, new SPApplier(ID.SP));
         this.ruleAppliers.put(ID.CH, new CHApplier(ID.CH));
-        this.ruleAppliers.put(ID.PC, new CHApplier(ID.PC));
-        this.ruleAppliers.put(ID.RAA, new CHApplier(ID.RAA));
+        this.ruleAppliers.put(ID.PC, new PCApplier(ID.PC));
+        this.ruleAppliers.put(ID.RAA, new RAAApplier(ID.RAA));
+        
+        this.ruleAppliers.put(ID.CL, new CLApplier(ID.CL));
     }
     
     public static Rule getInstance() {

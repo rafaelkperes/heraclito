@@ -188,8 +188,62 @@ public class ProofTest {
     }
     
     @Test
+    public void applyRule_applyCH_doesNotRAAAutomatically() throws ProofException {
+        System.out.println("Expected header, all hypothesis, HRAA (A, B |- A^B):");
+        
+        Proof proof = new Proof("A, B |- A^B");
+        
+        proof.addAllHypothesis();
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        Expression outterExp = new Expression("~A");
+        
+        try {
+            proof.applyRule(Rule.ID.CH, innerExp, outterExp);
+        } catch (ProofException pe) {
+            fail(pe.getMessage());
+        }
+        
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
     public void applyRule_applyCH_doesRAAAutomatically() throws ProofException {
-        System.out.println("Expected header, all hypothesis, HRAA and RAA (A, B |- A^B):");
+        System.out.println("Expected header, all hypothesis, HRAA, CJ and RAA (A, B |- A^B):");
+        
+        Proof proof = new Proof("A, B |- A^B");
+        
+        proof.addAllHypothesis();
+        
+        ArrayList<Integer> innerExp = new ArrayList<>();
+        Expression outterExp = new Expression("~~A");
+        
+        try {
+            proof.applyRule(Rule.ID.CH, innerExp, outterExp);
+        } catch (ProofException pe) {
+            fail(pe.getMessage());
+        }
+        
+        innerExp = new ArrayList<>();
+        innerExp.add(0);
+        innerExp.add(2);
+        
+        try {
+            proof.applyRule(Rule.ID.CJ, innerExp, outterExp);
+        } catch (ProofException pe) {
+            fail(pe.getMessage());
+        }
+        
+        
+        
+        System.out.println(proof);
+        System.out.println("");
+    }
+    
+    @Test
+    public void applyRule_applyCH_doesPCAutomatically() throws ProofException {
+        System.out.println("Expected header, all hypothesis, HPC, CL and PC (A, B |- A^B):");
         
         Proof proof = new Proof("A, B |- A^B");
         
@@ -200,6 +254,15 @@ public class ProofTest {
         
         try {
             proof.applyRule(Rule.ID.CH, innerExp, outterExp);
+        } catch (ProofException pe) {
+            fail(pe.getMessage());
+        }
+        
+        innerExp = new ArrayList<>();
+        innerExp.add(1);
+        
+        try {
+            proof.applyRule(Rule.ID.CL, innerExp, outterExp);
         } catch (ProofException pe) {
             fail(pe.getMessage());
         }
