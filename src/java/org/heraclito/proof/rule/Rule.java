@@ -11,7 +11,7 @@ import org.heraclito.proof.Expression;
 import org.heraclito.proof.Operator;
 import org.heraclito.proof.ProofException;
 import org.heraclito.proof.rule.applier.*;
-import org.heraclito.proof.rule.applier.derived.CLApplier;
+import org.heraclito.proof.rule.applier.derived.*;
 
 /**
  *
@@ -36,6 +36,12 @@ public class Rule {
         SP("SP", "rule.id.sp", "rule.name.sp", 1, true),
         
         CL("CL", "rule.id.cl", "rule.name.cl", 1, false),
+        DC("DC", "rule.id.dc", "rule.name.dc", 3, false),
+        EXP("EXP", "rule.id.exp", "rule.name.exp", 1, false),
+        INC("INC", "rule.id.inc", "rule.name.inc", 2, true),
+        MT("MT", "rule.id.mt", "rule.name.mt", 2, false),
+        SD("SD", "rule.id.sd", "rule.name.sd", 2, false),
+        SH("SH", "rule.id.sh", "rule.name.sh", 2, false)
         ;
 
         private final String code;
@@ -102,6 +108,12 @@ public class Rule {
         this.ruleAppliers.put(ID.RAA, new RAAApplier(ID.RAA));
         
         this.ruleAppliers.put(ID.CL, new CLApplier(ID.CL));
+        this.ruleAppliers.put(ID.DC, new DCApplier(ID.DC));
+        this.ruleAppliers.put(ID.EXP, new EXPApplier(ID.EXP));
+        this.ruleAppliers.put(ID.INC, new INCApplier(ID.INC));
+        this.ruleAppliers.put(ID.MT, new MTApplier(ID.MT));
+        this.ruleAppliers.put(ID.SD, new SDApplier(ID.SD));        
+        this.ruleAppliers.put(ID.SH, new SDApplier(ID.SH));
     }
     
     public static Rule getInstance() {
