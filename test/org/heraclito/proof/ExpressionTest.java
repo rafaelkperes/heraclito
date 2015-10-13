@@ -5,13 +5,19 @@
  */
 package org.heraclito.proof;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -163,5 +169,32 @@ public class ExpressionTest {
             resultRightExpressions.add(expression.getRightExpression());
         }
         assertArrayEquals(expectedRightExpressions, resultRightExpressions.toArray());
+    }
+
+    @Test
+    public void serialize_KeepsStringAsitIs_() throws Exception {
+        Expression exp = new Expression("A^B");
+
+        try (FileOutputStream fileOut = new FileOutputStream("./expression.her");
+                ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(exp);
+            out.close();
+            fileOut.close();
+            System.out.println("Serialized expression.");
+        }
+
+        Expression ret = null;
+
+        try (FileInputStream fileIn = new FileInputStream("./expression.her"); 
+                ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            ret = (Expression) in.readObject();
+            
+            System.out.println("Deserialized expression:");
+            System.out.println(ret);
+            System.out.println("Right Expression: " + ret.getRightExpression());
+        } catch (Exception e) {
+            System.out.println("Couldn't read from serialized expression.");
+        }
+
     }
 }

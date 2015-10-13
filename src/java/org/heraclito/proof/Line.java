@@ -5,6 +5,7 @@
  */
 package org.heraclito.proof;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.heraclito.proof.rule.Rule;
@@ -13,7 +14,7 @@ import org.heraclito.proof.rule.Rule;
  *
  * @author gia
  */
-public class Line {
+public class Line implements Serializable {
 
     private Expression expression;
     private Rule.ID appliedRule;

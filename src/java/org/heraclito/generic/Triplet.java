@@ -5,6 +5,8 @@
  */
 package org.heraclito.generic;
 
+import java.io.Serializable;
+
 /**
  *
  * @author gia
@@ -12,7 +14,7 @@ package org.heraclito.generic;
  * @param <V> value
  * @param <X> complement
  */
-public class Triplet<K, V, X> {
+public class Triplet<K, V, X> implements Serializable {
 
     private K key;
     private V value;

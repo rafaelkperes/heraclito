@@ -1,5 +1,6 @@
 package org.heraclito.proof;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -11,7 +12,6 @@ import org.heraclito.parser.line.visitor.LeftExpressionVisitor;
 import org.heraclito.parser.line.visitor.MainOperatorVisitor;
 import org.heraclito.parser.line.visitor.RightExpressionVisitor;
 import org.heraclito.parser.line.visitor.StringPatternVisitor;
-import org.heraclito.proof.rule.Rule;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,15 +22,15 @@ import org.heraclito.proof.rule.Rule;
  *
  * @author Rafael
  */
-public class Expression {
+public class Expression implements Serializable {
 
     private String expression;
-    private ParserRuleContext parserRoot;
-    
+    private transient ParserRuleContext parserRoot;
+
     public Expression(String expression) throws ProofException {
         setStringValue(expression);
     }
-    
+
     public static String formatExpression(String stringValue) throws ProofException {
         ANTLRInputStream input = new ANTLRInputStream(stringValue);
         TokenStream tokens = new CommonTokenStream(new LineLexer(input));
@@ -45,7 +45,7 @@ public class Expression {
             throw new ProofException("exception.invalid.expression.input");
         }
     }
-    
+
     private void setStringValue(String stringValue) throws ProofException {
         ANTLRInputStream input = new ANTLRInputStream(stringValue);
         TokenStream tokens = new CommonTokenStream(new LineLexer(input));
@@ -61,13 +61,21 @@ public class Expression {
             throw new ProofException("exception.invalid.expression.input");
         }
     }
-    
+
     /**
      * Returns the main operator of the line or null if there's no operator.
-     * 
+     *
      * @return main operator of the line or null if there's no operator.
      */
     public Operator getMainOperator() {
+        if(this.parserRoot == null) {            
+            try {
+                setStringValue(this.expression);
+            } catch (ProofException ex) {
+                return null;
+            }
+        }
+        
         try {
             MainOperatorVisitor operatorVisitor = new MainOperatorVisitor();
             Operator ret = operatorVisitor.visit(this.parserRoot);
@@ -76,8 +84,8 @@ public class Expression {
             return null;
         }
     }
-    
-     /**
+
+    /**
      * Returns the expression to the left of the main operator, or null if
      * there's no expression to the left of the main operator or no main
      * operator.
@@ -85,6 +93,14 @@ public class Expression {
      * @return expression to the left of the main operator (may be null).
      */
     public Expression getLeftExpression() {
+        if(this.parserRoot == null) {            
+            try {
+                setStringValue(this.expression);
+            } catch (ProofException ex) {
+                return null;
+            }
+        }
+        
         try {
             LeftExpressionVisitor stringVisitor = new LeftExpressionVisitor();
             String ret = stringVisitor.visit(this.parserRoot);
@@ -105,6 +121,14 @@ public class Expression {
      * @return expression to the right of the main operator (may be null).
      */
     public Expression getRightExpression() {
+        if(this.parserRoot == null) {            
+            try {
+                setStringValue(this.expression);
+            } catch (ProofException ex) {
+                return null;
+            }
+        }
+        
         try {
             RightExpressionVisitor stringVisitor = new RightExpressionVisitor();
             String ret = stringVisitor.visit(this.parserRoot);
@@ -116,13 +140,11 @@ public class Expression {
             return null;
         }
     }
-    
-    
+
     /**
-     * Returns the string for this expression.
-     * The string is the original entry modified to match the expression 
-     * pattern.
-     * 
+     * Returns the string for this expression. The string is the original entry
+     * modified to match the expression pattern.
+     *
      * @return string representing the expression.
      */
     @Override
@@ -137,15 +159,15 @@ public class Expression {
         hash = 13 * hash + Objects.hashCode(this.parserRoot);
         return hash;
     }
-    
+
     public boolean isContradictionOf(Expression exp) {
-        if(Operator.NEGATION.equals(this.getMainOperator())) {
-            if(this.getRightExpression().equals(exp)) {
+        if (Operator.NEGATION.equals(this.getMainOperator())) {
+            if (this.getRightExpression().equals(exp)) {
                 return true;
             }
         }
-        if(Operator.NEGATION.equals(exp.getMainOperator())) {
-            if(exp.getRightExpression().equals(this)) {
+        if (Operator.NEGATION.equals(exp.getMainOperator())) {
+            if (exp.getRightExpression().equals(this)) {
                 return true;
             }
         }
@@ -166,6 +188,5 @@ public class Expression {
         }
         return true;
     }
-    
-    
+
 }

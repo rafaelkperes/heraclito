@@ -5,6 +5,7 @@
  */
 package org.heraclito.proof;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,15 +27,15 @@ import org.heraclito.proof.rule.Rule;
  *
  * @author Rafael
  */
-public class Proof {
+public class Proof implements Serializable {
 
-    private ParserRuleContext treeroot;
+    private transient ParserRuleContext treeroot;
     private List<Pair<Expression, Boolean>> hypothesisPairs;
     private Expression result;
     private String header;
-    private Stack<Triplet<Expression, Rule.ID, Integer>> expectedResult; /* from HRAA/HPC  - result, result rule, beginning line*/
+    private final Stack<Triplet<Expression, Rule.ID, Integer>> expectedResult; /* from HRAA/HPC  - result, result rule, beginning line*/
 
-    private List<Line> lines;
+    private final List<Line> lines;
 
     public Proof(String header) throws ProofException {
         setHeader(header);
